@@ -10,7 +10,7 @@ Validated end-to-end: following this framework in a fresh Laravel 13 app (servic
 
 - **`SKILL.md`** — entry point: overview, guardrails, reuse map, phased build order.
 - **`references/`** — ~45 detail files: UX anatomy captured from a real enterprise CRM reference org, full object catalog (Account/Contact/Opportunity/Activities), data model & migrations, component catalog (Blade + Alpine + Tailwind), permissions, testing strategy, V1/V2/V3 roadmap.
-- **`HOW-TO-USE-THIS-SKILL.md`** — practical usage guide. Note: the CRM's own UI/domain copy inside `references/*.md` (field labels, button text, status names) targets an Italian-language CRM by design — that's the product spec, not the skill's own documentation; translate those labels yourself if you're building for another language.
+- **`HOW-TO-USE-THIS-SKILL.md`** — practical usage guide.
 
 ## Using it with Claude Code
 
