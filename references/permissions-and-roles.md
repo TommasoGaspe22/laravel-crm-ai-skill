@@ -1,42 +1,42 @@
 # Permissions & roles
 
-**Scope:** modello autorizzazioni CRM. Fonte: **Osservato** (azioni "Cambia titolare", owner "Alias titolare"; org demo mono-utente) + **Proposto per Laravel**. Multi-utente reale **⛔ Da verificare** (demo con 1 utente).
+**Scope:** the CRM authorization model. Source: **Observed** ("Change Owner" actions, "Owner Alias" owner; single-user demo org) + **Proposed for Laravel**. Real multi-user behavior **⛔ to verify** (single-user demo).
 
-## Osservato / Dedotto (org di riferimento)
-- Ogni record ha un **Titolare (Owner)**; azione **Cambia titolare** (singola e bulk).
-- L'org di riferimento ha sharing model complesso (org-wide defaults, ruoli, sharing rules, team) → **Non replicare** in V1 (troppo pesante, non ispezionabile nella demo).
-- Nella demo tutto è visibile all'unico utente admin.
+## Observed / Deduced (reference org)
+- Every record has an **Owner**; **Change Owner** action (single and bulk).
+- The reference org has a complex sharing model (org-wide defaults, roles, sharing rules, teams) → **Do not replicate** in V1 (too heavy, not inspectable in the demo).
+- In the demo everything is visible to the single admin user.
 
-## Modello Laravel proposto (Proposto per Laravel)
-Riusa i ruoli esistenti `admin`/`sales` (`config('crm.user_roles')`, `User::isAdmin()/isSales()`, middleware `role`).
+## Proposed Laravel model (Proposed for Laravel)
+Reuse the existing `admin`/`sales` roles (`config('crm.user_roles')`, `User::isAdmin()/isSales()`, `role` middleware).
 
-### Ruoli CRM
-- **admin:** tutto (view/create/update/delete/convert/assign/bulk su tutti i record; gestione viste condivise).
-- **sales:** view/create/update/convert su tutti i record commerciali; **delete** solo admin (sales chiude/archivia); **assign owner** admin (o sales→se stesso); bulk admin.
-- (V3) **manager/team lead:** vede il team; **read-only** per reporting.
+### CRM roles
+- **admin:** everything (view/create/update/delete/convert/assign/bulk on all records; shared-view management).
+- **sales:** view/create/update/convert on all sales records; **delete** admin-only (sales closes/archives instead); **assign owner** admin-only (or sales→self); bulk admin-only.
+- (V3) **manager/team lead:** sees the team; **read-only** for reporting.
 
-### Policy (una per oggetto: `CrmAccountPolicy`, `CrmContactPolicy`, `CrmOpportunityPolicy`, `CrmActivityPolicy`, + `CommercialPipelineEntryPolicy`)
-| Abilità | admin | sales |
+### Policy (one per object: `CrmAccountPolicy`, `CrmContactPolicy`, `CrmOpportunityPolicy`, `CrmActivityPolicy`, + `CommercialPipelineEntryPolicy`)
+| Ability | admin | sales |
 |---|---|---|
-| viewAny/view | ✔ | ✔ (tutti; opz. solo propri se `owner_scope`) |
+| viewAny/view | ✔ | ✔ (all; optionally own-only if `owner_scope`) |
 | create | ✔ | ✔ |
 | update | ✔ | ✔ |
-| delete | ✔ | ✘ (no; solo close/archive) |
+| delete | ✔ | ✘ (no; close/archive only) |
 | convert (lead) | ✔ | ✔ |
 | changeOwner/assign | ✔ | self only (config) |
 | bulk | ✔ | ✘ |
 | manage shared views | ✔ | ✘ |
 
-- **Scope "Assegnati a me":** filtro (`owner_id = auth id`), non restrizione hard (salvo config `owner_scope=true` per limitare sales ai propri record).
-- **Gate/middleware:** route CRM sotto `auth`; azioni admin-only via `role:admin` o policy; ogni controller `->authorize()`.
-- **Field-level / dati sensibili:** V3 (field-level security). V1: PII (email/telefono) visibile a staff; non esporre in log.
-- **Audit accessi:** log di view/edit/delete/convert/export (chi/quando/cosa) → `audit_events` (`data-model-and-migrations.md`), soprattutto per export ed eliminazioni.
+- **"Assigned to me" scope:** a filter (`owner_id = auth id`), not a hard restriction (unless `owner_scope=true` config limits sales to their own records).
+- **Gate/middleware:** CRM routes under `auth`; admin-only actions via `role:admin` or policy; every controller `->authorize()`.
+- **Field-level / sensitive data:** V3 (field-level security). V1: PII (email/phone) visible to staff; don't expose it in logs.
+- **Access audit:** log view/edit/delete/convert/export (who/when/what) → `audit_events` (`data-model-and-migrations.md`), especially for exports and deletions.
 
-## Priorità
-- **V1:** owner per record, policy per oggetto (admin vs sales), delete admin-only, scope "assegnati a me", audit azioni sensibili.
-- **V2:** team/manager, owner-scope configurabile, condivisione viste, audit ricco.
-- **V3:** field-level security, sharing rules, impersonation (solo se necessario — **Non replicare** di default).
-- **Non replicare:** org-wide defaults/sharing rules complesse come nell'org di riferimento.
+## Priority
+- **V1:** per-record owner, per-object policy (admin vs sales), delete admin-only, "assigned to me" scope, sensitive-action audit.
+- **V2:** team/manager, configurable owner-scope, view sharing, rich audit.
+- **V3:** field-level security, sharing rules, impersonation (only if needed — **do not replicate** by default).
+- **Do not replicate:** org-wide defaults/complex sharing rules like the reference org's.
 
 ## Open questions → `open-questions-and-assumptions.md`
-NV1 (multi-utente/sharing non testabile in demo mono-utente) → verificare con ruoli Laravel + test; scope sales (tutti vs propri) = decisione team.
+NV1 (multi-user/sharing not testable in the single-user demo) → verify with Laravel roles + tests; sales scope (all vs own) = a team decision.

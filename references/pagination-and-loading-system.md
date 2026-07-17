@@ -1,21 +1,21 @@
 # Pagination & loading system
 
-**Scope:** paginazione, caricamento progressivo, skeleton, stati loading/errore delle liste. Fonte: **Osservato** (liste piccole; comportamento con molti record **Da verificare**).
+**Scope:** pagination, progressive loading, skeletons, loading/error states for lists. Source: **Observed** (small lists; behavior with many records **to verify**).
 
-## Osservato / Dedotto
-- Meta line "N elementi • Aggiornato …"; **Aggiorna** (refresh) ricarica.
-- L'org di riferimento usa **infinite scroll / caricamento progressivo** (carica altre righe scrollando) con conteggio "50+"; ordinamento server-side.
-- **Da verificare:** soglia caricamento, comportamento >2000 record, indicatori loading.
+## Observed / Deduced
+- Meta line "N items • Updated …"; **Refresh** reloads.
+- The reference org uses **infinite scroll / progressive loading** (loads more rows on scroll) with a "50+" count; server-side sorting.
+- **To verify:** load threshold, behavior beyond 2000 records, loading indicators.
 
-## Proposta Laravel (Proposto per Laravel)
-- **Paginazione server-side** (`LengthAwarePaginator`), page size da `config('crm.dashboard.page_sizes')` + `withQueryString()` (mantiene view/filtri/sort). Preferita a infinite-scroll per semplicità/SEO/robustezza.
-- **Loading:** skeleton rows (Alpine `x-cloak` + markup) durante navigazione; spinner solo per azioni async (quick action/inline save).
-- **Stati:** empty (curato per vista), errore/unavailable (degrada come `pipelineUnavailable` esistente — mai 500), record mancante (404 gestito).
-- **Performance:** indici su colonne filtrate/ordinate; `select` mirati; eager-load (no N+1); count efficiente (o approssimato per liste enormi, V2).
-- **V2:** infinite scroll opzionale (Alpine + endpoint `?cursor=`), cache conteggi.
+## Proposed Laravel design (Proposed for Laravel)
+- **Server-side pagination** (`LengthAwarePaginator`), page size from `config('crm.dashboard.page_sizes')` + `withQueryString()` (keeps view/filters/sort). Preferred over infinite-scroll for simplicity/SEO/robustness.
+- **Loading:** skeleton rows (Alpine `x-cloak` + markup) during navigation; spinner only for async actions (quick action/inline save).
+- **States:** empty (curated per view), error/unavailable (degrades like the existing `pipelineUnavailable` — never a 500), missing record (handled 404).
+- **Performance:** indexes on filtered/sorted columns; targeted `select`; eager-load (no N+1); efficient count (or approximate for huge lists, V2).
+- **V2:** optional infinite scroll (Alpine + `?cursor=` endpoint), count caching.
 
-## Priorità
-- **V1:** paginazione classica + skeleton + empty/error states + query-string persistente. **V2:** infinite scroll, cache, count ottimizzato. **V3:** virtualizzazione.
+## Priority
+- **V1:** classic pagination + skeleton + empty/error states + persistent query-string. **V2:** infinite scroll, caching, optimized count. **V3:** virtualization.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q13: comportamento con molti record; soglie; count su dataset grandi (target performance in `testing-strategy.md`).
+Q13: behavior with many records; thresholds; count on large datasets (performance target in `testing-strategy.md`).

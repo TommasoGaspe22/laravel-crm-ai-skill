@@ -1,19 +1,19 @@
 # Unsaved changes system
 
-**Scope:** rilevamento modifiche non salvate + warning. Fonte: **Osservato** (barra "Annulla/Salva" appare editando; warning alla chiusura **Da verificare**).
+**Scope:** unsaved-change detection + warning. Source: **Observed** ("Cancel/Save" bar appears while editing; close warning **to verify**).
 
-## Osservato / Dedotto
-- Inline edit / modale: editando ≥1 campo appare una **barra `Annulla · Salva`** (stato "dirty").
-- **Dedotto/Da verificare:** chiudere la modale (X/Annulla) con modifiche → warning "Perderai le modifiche?" (comportamento standard dell'org di riferimento). Da testare.
+## Observed / Deduced
+- Inline edit / modal: editing ≥1 field shows a **`Cancel · Save`** bar ("dirty" state).
+- **Deduced/To verify:** closing the modal (X/Cancel) with pending edits → warning "You'll lose your changes?" (the reference org's standard behavior). To be tested.
 
-## Proposta Laravel (Proposto per Laravel)
-- **Alpine `dirty` tracking:** ogni form/inline-edit tiene un flag `dirty` (confronto valori iniziali↔correnti).
-- **Warning chiusura:** su close/X/navigazione con `dirty` → `confirm()` / dialog `x-crm.confirm-dialog` ("Ci sono modifiche non salvate. Uscire senza salvare?"). `beforeunload` per navigazione via browser.
-- **Barra salva:** `Annulla` (ripristina valori iniziali, `dirty=false`) · `Salva` (submit).
-- **Rischio implementativo:** falsi positivi (normalizzare valori prima del confronto); non bloccare l'utente in modo fastidioso; accessibilità del dialog.
+## Proposed Laravel design (Proposed for Laravel)
+- **Alpine `dirty` tracking:** every form/inline-edit keeps a `dirty` flag (comparing initial↔current values).
+- **Close warning:** on close/X/navigation while `dirty` → `confirm()` / `x-crm.confirm-dialog` dialog ("You have unsaved changes. Leave without saving?"). `beforeunload` for browser navigation.
+- **Save bar:** `Cancel` (restores initial values, `dirty=false`) · `Save` (submit).
+- **Implementation risk:** false positives (normalize values before comparing); don't annoyingly block the user; dialog accessibility.
 
-## Priorità
-- **V1:** dirty tracking + barra Annulla/Salva + warning su chiusura modale con modifiche. **V2:** `beforeunload`, autosave bozze. **V3:** recupero bozze.
+## Priority
+- **V1:** dirty tracking + Cancel/Save bar + warning on closing a modal with pending edits. **V2:** `beforeunload`, draft autosave. **V3:** draft recovery.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q5: warning unsaved-changes (testo, trigger) — da testare (aprire modale, modificare, chiudere).
+Q5: unsaved-changes warning (text, trigger) — to test (open modal, edit, close).

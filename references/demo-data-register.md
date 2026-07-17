@@ -1,85 +1,85 @@
 # Demo data register (`CRM-SKILL-`)
 
-**Scope:** registro di TUTTI i record demo creati nell'org di riferimento per la ricerca. Aggiornare a ogni creazione/modifica/eliminazione. Serve per test ripetibili e per il **cleanup finale**.
+**Scope:** register of ALL demo records created in the reference org for this research. Update on every creation/edit/deletion. Needed for repeatable tests and for the **final cleanup**.
 
-## Regole (obbligatorie)
-- Ogni record creato ha prefisso **`CRM-SKILL-`** nel nome/oggetto principale.
-- Email solo fittizie: `@example.test`, `@crm-skill.test`, `@crm-demo.test`.
-- Telefoni/URL/file fittizi. Nessun dato personale reale.
-- Non toccare record non creati da me. Non inviare email/inviti reali.
-- Cleanup finale: eliminare tutti i `CRM-SKILL-` (procedura in fondo).
+## Rules (mandatory)
+- Every record created has the **`CRM-SKILL-`** prefix in its name/primary label.
+- Fake emails only: `@example.test`, `@crm-skill.test`, `@crm-demo.test`.
+- Fake phone numbers/URLs/files. No real personal data.
+- Don't touch records you didn't create. Don't send real emails/invites.
+- Final cleanup: delete all `CRM-SKILL-` records (procedure at the bottom).
 
-## Convenzione naming
-`CRM-SKILL-{Oggetto} {Variante} {NNN}` — es. `CRM-SKILL-Lead Nuovo 001`, `CRM-SKILL-Azienda Manufacturing 001`, `CRM-SKILL-Opportunità Automazione Fatture`.
+## Naming convention
+`CRM-SKILL-{Object} {Variant} {NNN}` — e.g. `CRM-SKILL-Lead New 001`, `CRM-SKILL-Company Manufacturing 001`, `CRM-SKILL-Opportunity Invoice Automation`.
 
-## Registro record
+## Record register
 
-| ID | Tipo | Nome | Obiettivo test | Stato | Relazioni | Flussi testati | Mantieni? | Note |
+| ID | Type | Name | Test goal | Status | Relations | Flows tested | Keep? | Notes |
 |---|---|---|---|---|---|---|---|---|
-| 00Qbl000005Rh9GEAS | Lead | CRM-SKILL-Lead Nuovo 001 | list view, record page, conversione | Nuovo | Società CRM-SKILL-Azienda Manufacturing 001 | creazione (Testato) | sì | Nome=Mario, email/tel fittizi |
-| 00Qbl000005RjCfEAK | Lead | CRM-SKILL-Lead Contattato 002 | stato Contattato, inline edit | Contattato | — | creazione + set stato (Testato) | sì | Nome=Luca |
-| 00Qbl000005RjHVEA0 | Lead | CRM-SKILL-Lead NonQualif 004 | stato Non qualificato | Non qualificato | — | creazione + set stato (Testato) | sì | Nome=Sara |
-| 00Qbl000005RjJ7EAK | Lead | CRM-SKILL-Lead Minimo 005 | dati minimi (solo required) | Nuovo (default) | — | creazione dati minimi (Testato) | sì | solo Cognome+Società |
-| *(fallito)* | Lead | CRM-SKILL-Lead Nurturing 003 | stato Nurturing | — | — | picklist flaky → da ricreare o set via inline edit | — | ritentare |
+| 00Qbl000005Rh9GEAS | Lead | CRM-SKILL-Lead New 001 | list view, record page, conversion | New | Company CRM-SKILL-Manufacturing Co 001 | creation (Tested) | yes | Name=Mario, fake email/phone |
+| 00Qbl000005RjCfEAK | Lead | CRM-SKILL-Lead Contacted 002 | Contacted status, inline edit | Contacted | — | creation + set status (Tested) | yes | Name=Luca |
+| 00Qbl000005RjHVEA0 | Lead | CRM-SKILL-Lead Unqualif 004 | Unqualified status | Unqualified | — | creation + set status (Tested) | yes | Name=Sara |
+| 00Qbl000005RjJ7EAK | Lead | CRM-SKILL-Lead Minimal 005 | minimal data (required only) | New (default) | — | minimal-data creation (Tested) | yes | Last name + Company only |
+| *(failed)* | Lead | CRM-SKILL-Lead Nurturing 003 | Nurturing status | — | — | flaky picklist → recreate or set via inline edit | — | retry |
 
-**Osservazione (Testato dinamicamente):** creazione via URL diretto di creazione lead dell'org di riferimento affidabile; picklist `Stato lead` intermittente (re-render lato org); required bloccanti = Cognome+Società (msg "Compila questo campo."). ID Lead prefix `00Q`.
+**Observation (Dynamically tested):** creation via the reference org's direct lead-creation URL is reliable; the `Lead status` picklist is intermittent (org-side re-render); blocking required fields = Last name + Company (msg "Fill in this field."). Lead ID prefix `00Q`.
 
-### Account creati (Testato dinamicamente)
-| ID | Nome | Tipo | Note |
+### Accounts created (Dynamically tested)
+| ID | Name | Type | Notes |
 |---|---|---|---|
-| 001bl000008DwzKAAS | CRM-SKILL-Azienda Manufacturing 001 | Cliente | tel + sito web fittizi; usato per opportunità |
-| 001bl000008DvaHAAS | CRM-SKILL-Azienda Retail 002 | Potenziale cliente | usato per opportunità |
-| 001bl000008DxQlAAK | CRM-SKILL-Azienda SenzaRelazioni 003 | — | caso "senza referenti/opportunità" |
+| 001bl000008DwzKAAS | CRM-SKILL-Manufacturing Co 001 | Customer | fake phone + website; used for opportunities |
+| 001bl000008DvaHAAS | CRM-SKILL-Retail Co 002 | Prospect | used for opportunities |
+| 001bl000008DxQlAAK | CRM-SKILL-No-Relations Co 003 | — | "no contacts/opportunities" case |
 
-ID Account prefix `001`. Campi New Account (Osservato): Nome account* (unico required), Tipo(picklist), Telefono, Sito Web, Società controllante(lookup), indirizzi.
+Account ID prefix `001`. New Account fields (Observed): Account name* (only required), Type (picklist), Phone, Website, Parent account (lookup), addresses.
 
-### ⚠️ Blocco noto: creazione Opportunità via automazione
-**Rischio implementativo / nota tooling:** la modale New Opportunity ha un **lookup Account** che, pilotato via Playwright, destabilizza il form (dopo l'interazione col lookup gli altri campi diventano non interattivi). Tentativi multipli (click opzione, keyboard ArrowDown+Enter, ricerca corta/lunga, creazione da record Account) falliti in modo intermittente.
-**Workaround adottato:** creare le Opportunità tramite il **flusso di conversione Lead** (Lead→Account+Referente+Opportunità), che è anche un flusso chiave da testare. In alternativa, creazione manuale.
-**Osservato comunque:** campi, sezioni (About/Status), fasi (`Qualify→…→Closed Lost`), Categoria previsione auto da Fase — sufficiente per `field-catalog`/`opportunity-record-page`.
+### ⚠️ Known blocker: creating Opportunities via automation
+**Implementation risk / tooling note:** the New Opportunity modal has an **Account lookup** that, when driven via Playwright, destabilizes the form (after interacting with the lookup, the other fields stop responding). Multiple attempts (clicking an option, keyboard ArrowDown+Enter, short/long search, creating from the Account record) failed intermittently.
+**Workaround adopted:** create Opportunities via the **Lead conversion flow** (Lead→Account+Contact+Opportunity), which is also a key flow to test. Manual creation is the alternative.
+**Still observed:** fields, sections (About/Status), stages (`Qualify→…→Closed Lost`), Forecast category auto-set from Stage — enough for `field-catalog`/`opportunity-record-page`.
 
-### Conversione eseguita (Testato dinamicamente, 2026-07-08)
-`CRM-SKILL-Lead Nuovo 001` (00Qbl000005Rh9GEAS) **convertito** → creati:
-- Account `CRM-SKILL-Azienda Manufacturing 001` (**duplicato** — l'org di riferimento non ha forzato "Scegli"; da recuperare ID)
-- Referente `Mario CRM-SKILL-Lead Nuovo 001` (email/telefono trasferiti)
-- Opportunità `CRM-SKILL-Azienda Manufacturing 001` (Data chiusura auto 30/09/2026, Fase iniziale)
-Lead → stato **Convertito** (read-only). ID esatti dei 3 record: **Da recuperare** (query o navigazione dalle card).
+### Conversion performed (Dynamically tested, 2026-07-08)
+`CRM-SKILL-Lead New 001` (00Qbl000005Rh9GEAS) **converted** → created:
+- Account `CRM-SKILL-Manufacturing Co 001` (**duplicate** — the reference org didn't force "Choose"; ID still to retrieve)
+- Contact `Mario CRM-SKILL-Lead New 001` (email/phone transferred)
+- Opportunity `CRM-SKILL-Manufacturing Co 001` (auto close date 2026-09-30, initial stage)
+Lead → status **Converted** (read-only). Exact IDs of the 3 records: **still to retrieve** (query or navigate from the cards).
 
-### Sessione 2 (2026-07-08) — test dinamici aggiuntivi
-- **Lead 003 Nurturing esiste** (il save era andato a buon fine nonostante il report di errore): visibile in AllOpenLeads.
-- **Conversione Lead 002** (`00Qbl000005RjCfEAK` Contattato) eseguita → 2ª Opportunità creata.
-- **Opportunità presenti (2):** `CRM-SKILL-Azienda Manufacturing 001-` (ID **006bl000005LLplAAG**, ora **Propose**) + `CRM-SKILL-Azienda Retail 002-` (Qualify). Entrambe close 30/09/2026, Ammontare vuoto.
-- **Stage transition testata** (Testato): Manufacturing opp Qualify→Propose via Path ("Contrassegna come Fase corrente").
-- **Kanban testato** (Testato): board "Tutte le opportunità" con colonne per fase, conteggi + somma €, card con drag handle.
-- **Filtri pannello** (Osservato): "Filtra per titolare", "Aggiungi filtro", "Rimuovi tutto" — solo su viste reali, NON su "Recenti".
+### Session 2 (2026-07-08) — additional dynamic tests
+- **Lead 003 Nurturing exists** (the save had actually succeeded despite the error report): visible in AllOpenLeads.
+- **Lead 002 conversion** (`00Qbl000005RjCfEAK` Contacted) performed → 2nd Opportunity created.
+- **Opportunities present (2):** `CRM-SKILL-Manufacturing Co 001-` (ID **006bl000005LLplAAG**, now **Propose**) + `CRM-SKILL-Retail Co 002-` (Qualify). Both closing 2026-09-30, Amount empty.
+- **Stage transition tested** (Tested): Manufacturing opp Qualify→Propose via Path ("Mark as current stage").
+- **Kanban tested** (Tested): "All opportunities" board with columns per stage, counts + € sum, cards with drag handle.
+- **Filters panel** (Observed): "Filter by owner", "Add filter", "Remove all" — only on real views, NOT on "Recent".
 
-## Stato creazione dataset (aggiornato)
-- **Lead: 5** (00Q… Rh9G convertito / RjCf convertito / RjHV / RjJ7 / +Nurturing003) · **Account: 3 + 2 (da conversioni, dup)** · **Referente: 2** (da conversioni) · **Opportunità: 2** (da conversioni; stati Propose+Qualify) · Attività: 0.
-- **Cleanup nota:** include gli Account duplicati + Referenti + Opportunità generati dalle 2 conversioni. Query cleanup per nome contenente `CRM-SKILL-` su ogni oggetto.
-- Prossimo: creare **Attività** (Task/Chiamata/Evento/Nota) su un record + timeline; testare **inline edit** e **azioni riga/bulk** + **eliminazione**; valorizzare Ammontare opp (per somme Kanban); testare drag&drop Kanban + chiusura Won/Lost.
+## Dataset status (updated)
+- **Leads: 5** (00Q… Rh9G converted / RjCf converted / RjHV / RjJ7 / +Nurturing003) · **Accounts: 3 + 2 (from conversions, dup)** · **Contacts: 2** (from conversions) · **Opportunities: 2** (from conversions; Propose+Qualify) · Activities: 0.
+- **Cleanup note:** includes the duplicate Accounts + Contacts + Opportunities generated by the 2 conversions. Cleanup query by name containing `CRM-SKILL-` on every object.
+- Next: create **Activities** (Task/Call/Event/Note) on a record + timeline; test **inline edit** and **row/bulk actions** + **deletion**; set an opp Amount (for Kanban sums); test Kanban drag&drop + Won/Lost closing.
 
-## Dataset pianificato (da creare)
+## Planned dataset (to create)
 
-**Lead** (stati + varianti): Nuovo · In lavorazione · Contattato · Qualificato · Non qualificato · Non raggiungibile · Convertito; follow-up futuro/oggi/scaduto; priorità alta/bassa; con/senza owner; con/senza attività; con note/file/email/telefono; dati minimi/completi; testo lungo; potenziale duplicato.
+**Leads** (statuses + variants): New · Working · Contacted · Qualified · Unqualified · Unreachable · Converted; future/today/overdue follow-up; high/low priority; with/without owner; with/without activities; with notes/files/email/phone; minimal/full data; long text; potential duplicate.
 
-**Account**: senza referenti · 1 referente · N referenti · senza opp · opp aperte/vinte/perse · attività future/storiche · note/file · dati minimi/completi.
+**Accounts**: no contacts · 1 contact · N contacts · no opps · open/won/lost opps · future/past activities · notes/files · minimal/full data.
 
-**Referenti**: CEO · CFO · CIO · Operations · Amministrazione · IT; con/senza attività/email/telefono/opportunità; minimi/completi.
+**Contacts**: CEO · CFO · CIO · Operations · Admin · IT; with/without activities/email/phone/opportunities; minimal/full.
 
-**Opportunità**: una per fase reale (`Qualify → Meet & Present → Propose → Negotiate → Closed Won → Closed Lost`); importi diversi/mancanti; probabilità diverse; closing date passata/futura; next step; motivo perdita; con/senza attività; account+referente collegati; minimi/completi.
+**Opportunities**: one per real stage (`Qualify → Meet & Present → Propose → Negotiate → Closed Won → Closed Lost`); different/missing amounts; different probabilities; past/future close date; next step; loss reason; with/without activities; linked account+contact; minimal/full.
 
-**Attività**: Task oggi/scaduto/futuro/completato; chiamata pianificata/completata; email registrata; evento futuro/passato; nota; + eventi di sistema (cambio owner/stato/priorità/fase, conversione, win/loss, file allegato).
+**Activities**: Task today/overdue/future/completed; planned/completed call; logged email; future/past event; note; + system events (owner/status/priority/stage change, conversion, win/loss, attached file).
 
-## Stato creazione dataset
-- Lead: 0/28 · Account: 0/13 · Referenti: 0/14 · Opportunità: 0/20 · Attività: 0/21. **Totale: 0.**
+## Dataset status
+- Leads: 0/28 · Accounts: 0/13 · Contacts: 0/14 · Opportunities: 0/20 · Activities: 0/21. **Total: 0.**
 
-## ✅ CLEANUP ESEGUITO (2026-07-08)
-Tutti i record `CRM-SKILL-` **eliminati** (verificato: liste vuote + record convertiti "Impossibile caricare"): 4 Lead diretti + 2 Lead convertiti + 4 Account + 2 Referenti + Opportunità (cascata da eliminazione Account). Il lead pre-esistente non-CRM-SKILL ("Tommaso Gasperoni", 00Qbl000005RNI3EAO) **preservato** (non creato da me). Org demo pulito. **Osservato (cleanup):** eliminare un Account **cascata** su Opportunità+Referenti collegati → conferma modello relazionale + rischio implementativo cascata in Laravel.
+## ✅ CLEANUP DONE (2026-07-08)
+All `CRM-SKILL-` records **deleted** (verified: empty lists + converted records "Failed to load"): 4 direct Leads + 2 converted Leads + 4 Accounts + 2 Contacts + Opportunities (cascaded from Account deletion). The pre-existing non-CRM-SKILL lead (a real name, ID 00Qbl000005RNI3EAO) was **preserved** (not created by this research). Demo org clean. **Observed (cleanup):** deleting an Account **cascades** to linked Opportunities+Contacts → confirms the relational model and flags an implementation risk around cascading deletes in Laravel.
 
-## Procedura di cleanup finale (per usi futuri)
-1. In ogni list view (Lead, Account, Referenti, Opportunità, Attività, Casi): filtrare/ordinare per nome contenente `CRM-SKILL-`.
-2. Selezionare tutti → azione bulk **Elimina** (o riga per riga se bulk non disponibile).
-3. Verificare che le eliminazioni a cascata (opportunità/attività collegate) non lascino orfani; eliminare eventuali residui.
-4. Svuotare il Cestino (Recycle Bin) se accessibile, per rimuovere definitivamente.
-5. Confermare in questo file: data cleanup, conteggio eliminati, residui.
-**Rischio implementativo:** l'eliminazione bulk e la cascata vanno verificate; annotare il comportamento reale osservato durante il cleanup (è anche un test valido per `bulk-actions-system.md`).
+## Final cleanup procedure (for future use)
+1. In every list view (Lead, Account, Contact, Opportunity, Activity, Case): filter/sort by name containing `CRM-SKILL-`.
+2. Select all → bulk **Delete** action (or row by row if bulk isn't available).
+3. Verify that cascading deletes (linked opportunities/activities) don't leave orphans; delete any leftovers.
+4. Empty the Recycle Bin if accessible, to remove permanently.
+5. Confirm in this file: cleanup date, deleted count, leftovers.
+**Implementation risk:** bulk deletion and cascading need verification; note the real behavior observed during cleanup (this also doubles as a valid test for `bulk-actions-system.md`).

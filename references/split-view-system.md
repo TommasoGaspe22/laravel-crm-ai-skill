@@ -1,19 +1,19 @@
-# Split view (Doppia visualizzazione)
+# Split view
 
-**Scope:** vista a due pannelli (lista a sinistra, record a destra). Fonte: **Osservato** (opzione "Doppia visualizzazione" nel display selector); comportamento **Da verificare** dinamicamente.
+**Scope:** two-pane view (list on the left, record on the right). Source: **Observed** ("Split View" option in the display selector); behavior **to verify** dynamically.
 
-## Osservato / Testato dinamicamente (2026-07-08)
-- Opzione **"Doppia visualizzazione"** nel toggle display (accanto a Tabella/Kanban).
-- **Testato:** layout confermato = **lista compatta a sinistra** (colonna Fase, card nome/account/data/importo, ricerca, checkbox) + **pannello record a destra** con empty state **"Nessun record selezionato — Per iniziare, apri un record dall'elenco."**; **freccia di collasso (◀)** tra i pannelli.
-- **Da verificare:** contenuto anteprima al click di un record, larghezza/persistenza pannelli, azioni nell'anteprima, responsive.
+## Observed / Dynamically tested (2026-07-08)
+- **"Split View"** option in the display toggle (next to Table/Kanban).
+- **Tested:** layout confirmed = **compact list on the left** (Stage column, name/account/date/amount card, search, checkboxes) + **record panel on the right** with empty state **"No record selected — To get started, open a record from the list."**; **collapse arrow (◀)** between the panels.
+- **To verify:** preview content on clicking a record, panel width/persistence, actions in the preview, responsive behavior.
 
-## Proposta Laravel (Proposto per Laravel)
-- **V2/V3** (non V1). Route `?display=split`. Layout: colonna lista (riuso `x-crm.data-table` compatta) + pannello record (riuso `x-crm.page-header` + sezioni chiave), caricato via Alpine/`fetch` parziale sul click (evita full reload).
-- **Rischio implementativo:** raddoppia query per pagina; caricare l'anteprima lazy; responsive → collassa a lista su mobile.
+## Proposed Laravel design (Proposed for Laravel)
+- **V2/V3** (not V1). Route `?display=split`. Layout: list column (reuse a compact `x-crm.data-table`) + record panel (reuse `x-crm.page-header` + key sections), loaded via Alpine/partial `fetch` on click (avoids a full reload).
+- **Implementation risk:** doubles the per-page query load; load the preview lazily; responsive → collapse to list-only on mobile.
 
-## Priorità
-- **V2/V3.** In V1 il flusso è: lista → click → record page piena (sufficiente). Split view solo se il team fa triage massivo.
-- **Non replicare (V1).**
+## Priority
+- **V2/V3.** In V1 the flow is: list → click → full record page (sufficient). Split view only if the team does mass triage.
+- **Do not replicate (V1).**
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q10: layout/azioni/persistenza split view.
+Q10: split-view layout/actions/persistence.

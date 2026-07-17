@@ -1,28 +1,28 @@
 # Inline edit system
 
-**Scope:** modifica inline dei campi su record page e list view. Fonte: **Osservato/Testato** (2026-07-08: pencil apre edit inline con barra "Annulla/Salva"; save selector calibrazione in corso).
+**Scope:** inline field editing on the record page and list view. Source: **Observed/Tested** (2026-07-08: the pencil opens inline edit with a "Cancel/Save" bar; save-selector calibration in progress).
 
-## Osservato / Testato dinamicamente (2026-07-08)
-- Ogni field row su record page mostra un **pencil ✎** (title "Modifica {Campo}") in hover/focus.
-- Click ✎ → il campo diventa **input editabile** in-place (text/number/picklist/lookup a seconda del tipo). Es. `Nome account` diventa editabile con **X** per rimuovere il lookup.
-- Editando appare una **barra di salvataggio** in basso con **`Annulla · Salva`** (batch: più modifiche, un solo Salva). → anche meccanismo **unsaved-changes** (`unsaved-changes-system.md`).
-- **Testato:** modificato inline **Ammontare** di un'opportunità a **30.000 €** → salvato e persistito (visibile in record, list e Kanban/split). Edit **batch multi-campo** (Ammontare + Descrizione) via la barra Salva.
-- Su list view: modalità **"Modifica elenco"** (toolbar) abilita edit inline celle (mass inline edit). **Da verificare** in dettaglio.
-- **Da verificare:** validazioni inline (required svuotato), campi non editabili (formula/rollup), edit picklist/lookup inline, conflitti/concorrenza.
+## Observed / Dynamically tested (2026-07-08)
+- Every field row on the record page shows a **pencil ✎** (title "Edit {Field}") on hover/focus.
+- Clicking ✎ → the field becomes an **editable input** in place (text/number/picklist/lookup depending on type). E.g. `Account name` becomes editable with an **X** to clear the lookup.
+- Editing shows a **save bar** at the bottom with **`Cancel · Save`** (batched: multiple edits, one Save). → also an **unsaved-changes** mechanism (`unsaved-changes-system.md`).
+- **Tested:** inline-edited an opportunity's **Amount** to **€30,000** → saved and persisted (visible in the record, list, and Kanban/split). **Multi-field batch** edit (Amount + Description) via the Save bar.
+- On the list view: **"Edit List"** mode (toolbar) enables inline cell editing (mass inline edit). **To verify** in detail.
+- **To verify:** inline validation (required field cleared), non-editable fields (formula/rollup), inline picklist/lookup editing, conflicts/concurrency.
 
-## Proposta Laravel (Proposto per Laravel)
-- **Componente** `x-crm.detail-section` con field rows editabili (Alpine `inlineEdit`): click ✎ → swap value↔input; stato `dirty` per riga; barra flottante `Annulla/Salva` quando ≥1 campo dirty.
-- **Endpoint** `PATCH /crm/{obj}/{id}` (parziale, solo campi modificati) con `FormRequest` (stesse regole del form completo, ma `sometimes`), policy `update`, ritorno JSON (valore aggiornato + eventuali errori per-campo) per aggiornare la UI senza reload.
-- **Tipi:** text/number/date/currency inline; picklist → combobox; lookup → ricerca async (endpoint dedicato).
-- **Validazione:** errori per-campo mostrati sotto la cella; se un campo required viene svuotato → blocco salvataggio.
-- **Rischio implementativo:** concorrenza (optimistic lock via `updated_at`); campi calcolati non editabili; XSS su testo; permessi per-campo (field-level) → V2/V3.
-- **Accessibilità:** ✎ è `button` con `aria-label`; input riceve focus; Esc annulla; la barra salva è raggiungibile da tastiera.
+## Proposed Laravel design (Proposed for Laravel)
+- **Component** `x-crm.detail-section` with editable field rows (Alpine `inlineEdit`): click ✎ → swap value↔input; `dirty` state per row; floating `Cancel/Save` bar when ≥1 field is dirty.
+- **Endpoint** `PATCH /crm/{obj}/{id}` (partial, only changed fields) with a `FormRequest` (same rules as the full form, but `sometimes`), `update` policy, JSON response (updated value + any per-field errors) to update the UI without a reload.
+- **Types:** text/number/date/currency inline; picklist → combobox; lookup → async search (dedicated endpoint).
+- **Validation:** per-field errors shown under the cell; if a required field is cleared → save is blocked.
+- **Implementation risk:** concurrency (optimistic lock via `updated_at`); non-editable computed fields; XSS on text; field-level permissions → V2/V3.
+- **Accessibility:** ✎ is a `button` with `aria-label`; the input receives focus; Esc cancels; the save bar is keyboard-reachable.
 
-## Priorità
-- **V1:** inline edit su record page per campi semplici (text/number/date/picklist), batch save bar, validazione base.
-- **V2:** inline edit su list view ("Modifica elenco"), lookup inline, mass edit selezione multipla.
-- **V3:** field-level security, edit condizionale.
-- **Non replicare:** edit inline su campi calcolati/formula.
+## Priority
+- **V1:** inline edit on the record page for simple fields (text/number/date/picklist), batch save bar, basic validation.
+- **V2:** inline edit on the list view ("Edit List"), inline lookup, mass edit on multi-selection.
+- **V3:** field-level security, conditional editing.
+- **Do not replicate:** inline edit on computed/formula fields.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q3 inline edit (batch/validazioni/campi non editabili/mass edit list) — Da testare in dettaglio.
+Q3 inline edit (batch/validation/non-editable fields/list mass edit) — to test in detail.

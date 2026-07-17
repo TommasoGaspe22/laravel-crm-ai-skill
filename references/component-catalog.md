@@ -16,40 +16,40 @@ Match the reference's calm, dense, enterprise feel:
 Object label (small) + record/list name (large) + right-aligned **action button group** + ▾ overflow. Props: `label`, `title`, `:actions`. Used on every list + record page. (Anatomy A.4 / B.1.)
 
 ### 2. `x-crm.path` (stage chevrons)
-Horizontal chevron steps; completed = tinted fill, current = dark/brand, future = grey; right primary button "Contrassegna come completo". Props: `:steps`, `current`, `:onSelect`. Alpine handles click→confirm→PATCH. Used on Lead (status) + Opportunità (fase). (Anatomy B.2 / screen E for board variant.)
+Horizontal chevron steps; completed = tinted fill, current = dark/brand, future = grey; right primary button "Mark as Complete". Props: `:steps`, `current`, `:onSelect`. Alpine handles click→confirm→PATCH. Used on Lead (status) + Opportunity (stage). (Anatomy B.2 / screen E for board variant.)
 
 ### 3. `x-crm.highlights` (record header details)
-Under the header: key field chips (es. Azienda · Ruolo · Telefono · Email · Owner · Stato/Priorità badges). Props: `:fields`.
+Under the header: key field chips (e.g. Company · Role · Phone · Email · Owner · Status/Priority badges). Props: `:fields`.
 
 ### 4. `x-crm.detail-section`
 Collapsible card with a section title (`About`, `Get in Touch`, …) containing **field rows**: `label` + `value` + inline-edit `✎`. Slot-based. Alpine: toggle collapse; inline-edit swaps value→input, batches into a save bar. Used in left column of record pages. (Anatomy B.3.)
 
 ### 5. `x-crm.data-table`
-Dense sortable table: header select-all + sortable `<th>` (`aria-sort`) + column-action ▾; rows with checkbox, cells (optional `✎`), trailing row-action ▾. Props: `:columns`, `:rows`, `:sort`, `selectable`. Server-side sort via links; Alpine for selection + row menus. The workhorse — Lead/Account/Contact/Opportunità list views. (Anatomy A.7.)
+Dense sortable table: header select-all + sortable `<th>` (`aria-sort`) + column-action ▾; rows with checkbox, cells (optional `✎`), trailing row-action ▾. Props: `:columns`, `:rows`, `:sort`, `selectable`. Server-side sort via links; Alpine for selection + row menus. The workhorse — Lead/Account/Contact/Opportunity list views. (Anatomy A.7.)
 
 ### 6. `x-crm.list-toolbar`
-Search box + controls gear menu (Nuovo/Clona/Rinomina/Condivisione/Seleziona campi/Elimina/Reimposta larghezze/Tabella·Kanban·Doppia) + density + refresh + sort + inline-edit toggle + charts + filters. Props: `:view`, `:displayMode`. (Anatomy A.6.)
+Search box + controls gear menu (New/Clone/Rename/Sharing/Select Fields/Delete/Reset Widths/Table·Kanban·Split) + density + refresh + sort + inline-edit toggle + charts + filters. Props: `:view`, `:displayMode`. (Anatomy A.6.)
 
 ### 7. `x-crm.view-selector`
 List-view name + ▾ dropdown of saved views + pin (default). Alpine dropdown; links to `?view=`. (Anatomy A.4.)
 
 ### 8. `x-crm.filter-panel`
-Right drawer: field conditions (add/remove), "Applica/Reset", active-filter chips. GET form (shareable URLs). (Anatomy A.6 / modules.md §5.)
+Right drawer: field conditions (add/remove), "Apply/Reset", active-filter chips. GET form (shareable URLs). (Anatomy A.6 / modules.md §5.)
 
 ### 9. `x-crm.activity-panel`
-Composer buttons row (Email · Operazione · Chiamata · Evento, each ▾) + filter line + collapsible groups ("Imminenti e scadute", by month) + empty state + "Mostra tutte". Backed by `crm_activities`. (Anatomy B.4.)
+Composer buttons row (Email · Task · Call · Event, each ▾) + filter line + collapsible groups ("Upcoming & Overdue", by month) + empty state + "Show All". Backed by `crm_activities`. (Anatomy B.4.)
 
 ### 10. `x-crm.related-list`
-Card: `Titolo (N)` + compact rows + "Visualizza tutto" + quick "Nuovo". Props: `title`, `:rows`, `createRoute`. Right column of record pages (Referenti, Opportunità, Casi, File). (Anatomy B.5.)
+Card: `Title (N)` + compact rows + "View All" + quick "New". Props: `title`, `:rows`, `createRoute`. Right column of record pages (Contacts, Opportunities, Cases, Files). (Anatomy B.5.)
 
 ### 11. `x-crm.record-modal`
-Centered modal with title, `* = Informazioni richieste`, **field sections** (grey headers), footer `Annulla · Salva e Nuovo · Salva`. Used for Create/Edit (Anatomy C) and adapted for the **Convert** modal (Anatomy D: three Crea/Scegli sections). Alpine: focus-trap, Esc close, required validation.
+Centered modal with title, `* = Required Information`, **field sections** (grey headers), footer `Cancel · Save & New · Save`. Used for Create/Edit (Anatomy C) and adapted for the **Convert** modal (Anatomy D: three Create/Choose sections). Alpine: focus-trap, Esc close, required validation.
 
 ### 12. Form fields
-`x-crm.field.text`, `.textarea`, `.date` (calendar popover), `.number`, `.picklist` (combobox ▾ w/ `role=listbox`/`option`), `.lookup` (search-as-you-type against an endpoint, shows "N corrispondenze"), `.checkbox`, `.owner` (user lookup). Each with label, required marker, error slot, focus ring.
+`x-crm.field.text`, `.textarea`, `.date` (calendar popover), `.number`, `.picklist` (combobox ▾ w/ `role=listbox`/`option`), `.lookup` (search-as-you-type against an endpoint, shows "N matches"), `.checkbox`, `.owner` (user lookup). Each with label, required marker, error slot, focus ring.
 
 ### 13. `x-crm.badge`
-Pill for stato/fase/priorità/urgenza. Color per semantic token; **always includes text** (never color-only). Uses `score-*`/`priority-*` classes.
+Pill for status/stage/priority/urgency. Color per semantic token; **always includes text** (never color-only). Uses `score-*`/`priority-*` classes.
 
 ### 14. `x-crm.kanban`
 Columns per stage with count + amount sum; draggable cards (SortableJS deferred). Drop → PATCH stage. (Anatomy E.)
@@ -71,6 +71,6 @@ Keep all JS tiny and framework-free (no React/LWC). Server-render data; Alpine o
 - [ ] Detail sections named + inline-edit working.
 - [ ] Activity panel + related lists present.
 - [ ] Table dense, sortable, selectable, row menus, inline `✎`.
-- [ ] Toolbar controls incl. display modes (Tabella/Kanban/Doppia).
+- [ ] Toolbar controls incl. display modes (Table/Kanban/Split).
 - [ ] Create/Convert modals sectioned with correct footer.
 - [ ] Badges text+color; toasts on actions; a11y (aria, focus, Esc).

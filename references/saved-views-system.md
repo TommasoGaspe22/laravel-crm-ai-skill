@@ -1,22 +1,22 @@
 # Saved views system
 
-**Scope:** viste salvate (list view). Fonte: **Osservato** (selettore viste + menu controlli).
+**Scope:** saved list views. Source: **Observed** (view selector + controls menu).
 
-## Osservato
-- **Selettore** (▾ sul nome vista) con: viste **standard** (es. Opportunità: `In chiusura nel mese corrente/prossimo`, `Novità della settimana corrente`, `Opportunità in corso di realizzazione`, `Tutte le opportunità`), **personali** (`Opportunità personali`), **di sistema** (`Recenti`/`Recently Viewed`, `Opportunità visualizzate recentemente`). Ricerca viste ("Cerca negli elenchi…"). **Pin** = imposta come default.
-- **Gestione** (gear controlli): `Nuovo · Clona · Rinomina · Impostazioni di condivisione · Elimina` (+ Seleziona campi, Reimposta larghezze).
-- **Vincolo (Testato):** le viste **di sistema** (Recenti) non supportano Filtri/Kanban/Grafici; solo standard/personali sì.
-- **Da verificare:** creazione vista (definizione filtri + colonne + condivisione), condivisione (chi può vedere), viste condivise.
+## Observed
+- **Selector** (▾ on the view name) with: **standard** views (e.g. Opportunity: `Closing This/Next Month`, `New This Week`, `Opportunities In Progress`, `All Opportunities`), **personal** (`My Opportunities`), **system** (`Recent`/`Recently Viewed`, `Recently Viewed Opportunities`). View search ("Search views…"). **Pin** = set as default.
+- **Management** (controls gear): `New · Clone · Rename · Sharing Settings · Delete` (+ Select Fields, Reset Widths).
+- **Constraint (Tested):** **system** views (Recent) don't support Filters/Kanban/Charts; only standard/personal do.
+- **To verify:** creating a view (defining filters + columns + sharing), sharing (who can see it), shared views.
 
-## Proposta Laravel (Proposto per Laravel)
-- **V1:** viste predefinite in codice (`App\Support\{Obj}ListViews`) selezionabili via `?view=` (mirror standard views), + pin default (preferenza utente).
-- **V2:** tabella **`saved_views`** (`id, object, name, owner_id, is_shared, filters_json, columns_json, sort_json, is_default`) → viste utente create/clonate/rinominate/eliminate; UI selettore + gestione (`x-crm.view-selector`). Serializzazione filtri = `filter-builder-system.md`.
-- **Policy:** viste personali (owner) vs condivise (visibili a staff/team); solo owner/admin modifica/elimina.
-- **Rischio implementativo:** validare `filters_json`/`columns_json` (whitelist campi); non fidarsi dei valori per query (anti-injection); default per utente.
+## Proposed Laravel design (Proposed for Laravel)
+- **V1:** views predefined in code (`App\Support\{Obj}ListViews`) selectable via `?view=` (mirrors standard views), + default pin (user preference).
+- **V2:** **`saved_views`** table (`id, object, name, owner_id, is_shared, filters_json, columns_json, sort_json, is_default`) → user-created/cloned/renamed/deleted views; selector + management UI (`x-crm.view-selector`). Filter serialization = `filter-builder-system.md`.
+- **Policy:** personal views (owner) vs shared (visible to staff/team); only owner/admin can edit/delete.
+- **Implementation risk:** validate `filters_json`/`columns_json` (field whitelist); never trust values directly in queries (anti-injection); per-user default.
 
-## Priorità
-- **V1:** viste predefinite + pin default. **V2:** saved views utente (CRUD + condivisione base). **V3:** condivisione granulare/team, viste dinamiche.
-- **Non replicare (V1):** condivisione per ruolo/coda complessa.
+## Priority
+- **V1:** preset views + default pin. **V2:** user saved views (CRUD + basic sharing). **V3:** granular/team sharing, dynamic views.
+- **Do not replicate (V1):** complex role/queue-based sharing.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q7 flusso creazione/clona/rinomina/condivisione vista; distinzione standard/personali/sistema; condivisione.
+Q7 create/clone/rename/share view flow; standard/personal/system distinction; sharing.

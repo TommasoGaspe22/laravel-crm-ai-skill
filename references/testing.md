@@ -16,8 +16,8 @@ Follow superpowers:test-driven-development: write the failing test first for eve
 - `owner()` relation loads; owner backfill matches exact names only (ambiguous/none → null).
 
 **List view + saved views**
-- Each view key filters correctly: `tutti, aperti(default), da_contattare, follow_up_ritardo, follow_up_oggi, contattati, chiusi, alta_priorita, assegnati_a_me`.
-- `assegnati_a_me` shows only `auth` user's `owner_id` rows.
+- Each view key filters correctly: `all, open(default), to_contact, follow_up_overdue, follow_up_today, contacted, closed, high_priority, assigned_to_me`.
+- `assigned_to_me` shows only `auth` user's `owner_id` rows.
 - Quick search `q` matches across name/company/role/email/phone/notes.
 - Sorting whitelist rejects unknown columns (no SQL injection via `sort`), applies asc/desc.
 - Pagination preserves query string; count reflects filter.

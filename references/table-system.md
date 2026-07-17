@@ -1,24 +1,24 @@
 # Table system (data grid)
 
-**Scope:** la tabella densa delle list view. Fonte: **Osservato/Testato** (liste popolate).
+**Scope:** the dense table used by list views. Source: **Observed/Tested** (populated lists).
 
-## Osservato
-- `role="grid"`, header sticky, densità compatta, zebra/hover.
-- **Header:** checkbox select-all + colonne; ogni header con **sort** (asc/desc, uno attivo, `aria-sort`) + menu **azioni colonna** ("Mostra azioni colonna": ordina, a capo/taglia testo, larghezza).
-- **Riga:** checkbox selezione + celle + **✎ inline edit** su celle editabili + **azione riga ▾** (Modifica/Elimina/Cambia titolare/…). Prima cella (nome) = link al record.
-- **Celle:** link, badge (stato/fase), avatar/owner (alias titolare), date formattate, testo troncato con tooltip.
-- **Modalità "Modifica elenco"** → edit inline massivo delle celle.
-- **Ordinamento** (Testato indirettamente): meta line "Ordinati per {col}".
+## Observed
+- `role="grid"`, sticky header, compact density, zebra/hover.
+- **Header:** select-all checkbox + columns; every header with **sort** (asc/desc, one active, `aria-sort`) + **column actions** menu ("Show column actions": sort, wrap/clip text, width).
+- **Row:** selection checkbox + cells + **✎ inline edit** on editable cells + **row action ▾** (Edit/Delete/Change Owner/…). First cell (name) = link to the record.
+- **Cells:** links, badges (status/stage), avatar/owner (owner alias), formatted dates, truncated text with tooltip.
+- **"Edit List" mode** → mass inline cell editing.
+- **Sorting** (indirectly tested): meta line "Sorted by {col}".
 
-## Proposta Laravel (Proposto per Laravel)
-- **Componente** `x-crm.data-table`: props `:columns` (label, key, sortable, align, formatter, editable), `:rows`, `:sort`, `selectable`, `:rowActions`. Sort server-side via link `?sort=&dir=`; selezione + menu via Alpine.
-- **Densità/colonne**: `column-management-system.md`. **Ordinamento**: whitelist colonne (anti-injection); indici DB sulle colonne ordinabili; una sort attiva (V1), multi (V2).
-- **Formatter** per tipo (data/valuta/badge/link/owner). Troncamento + `title`.
-- **Performance:** paginazione server-side (`pagination-and-loading-system.md`); eager-load relazioni mostrate (owner/account); niente N+1.
-- **Accessibilità:** `<th scope=col>`, header sortabili `<button aria-sort>`, checkbox etichettate.
+## Proposed Laravel design (Proposed for Laravel)
+- **Component** `x-crm.data-table`: props `:columns` (label, key, sortable, align, formatter, editable), `:rows`, `:sort`, `selectable`, `:rowActions`. Server-side sort via `?sort=&dir=` links; selection + menus via Alpine.
+- **Density/columns**: `column-management-system.md`. **Sorting**: column whitelist (anti-injection); DB indexes on sortable columns; one active sort (V1), multi (V2).
+- **Formatter** per type (date/currency/badge/link/owner). Truncation + `title`.
+- **Performance:** server-side pagination (`pagination-and-loading-system.md`); eager-load displayed relations (owner/account); no N+1.
+- **Accessibility:** `<th scope=col>`, sortable headers as `<button aria-sort>`, labeled checkboxes.
 
-## Priorità
-- **V1:** tabella densa, sort singolo, badge/formatter, link, azione riga, select+bulk, responsive (scroll orizzontale). **V2:** inline edit celle, multi-sort, resize colonne, sticky prima colonna. **V3:** virtualizzazione/data-grid lib (Tabulator) se necessario.
+## Priority
+- **V1:** dense table, single sort, badges/formatters, links, row action, select+bulk, responsive (horizontal scroll). **V2:** inline cell edit, multi-sort, column resize, sticky first column. **V3:** virtualization/data-grid lib (Tabulator) if needed.
 
 ## Open questions
-Multi-sort; resize persistente; virtualizzazione con molti record (→ `pagination-and-loading-system.md`).
+Multi-sort; persistent resize; virtualization with many records (→ `pagination-and-loading-system.md`).

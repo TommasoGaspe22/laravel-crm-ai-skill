@@ -1,42 +1,42 @@
 # Open questions & assumptions
 
-Traccia tutto ciò che è **incerto**, **non ancora testato**, o **assunto**. Ogni voce ha: stato, perché, e come risolverla (test o decisione). Aggiornare a ogni ciclo. In caso di interruzione tecnica, questo file + `definition-of-done.md` permettono di riprendere senza rifare analisi.
+Tracks everything that's **uncertain**, **not yet tested**, or **assumed**. Every item has: status, why, and how to resolve it (test or decision). Update every cycle. If research is interrupted, this file + `definition-of-done.md` let you resume without redoing the analysis.
 
-## Assunzioni correnti (da confermare con test dinamico)
-| # | Assunzione | Base | Come confermare |
+## Current assumptions (to confirm with dynamic testing)
+| # | Assumption | Basis | How to confirm |
 |---|---|---|---|
-| AS1 | Le fasi Opportunità dell'org sono `Qualify→Meet & Present→Propose→Negotiate→Closed Won→Closed Lost` | Osservato (picklist New Opp) | Creare 1 opp per fase e verificare Path/Kanban |
-| AS2 | La scala stati Lead è `Nuovo→Contattato→Nurturing→Non qualificato→Convertito` | Osservato (Path record) | Creare lead e cambiare stato lungo il Path |
-| AS3 | La conversione crea Account+Referente+Opportunità in un'unica transazione | Osservato (modale + helper text) | Convertire un lead demo e verificare i 3 record + timeline |
-| AS4 | Le related list per Account sono Referenti/Opportunità/Casi | Osservato | Popolare e verificare conteggi/azioni |
-| AS5 | Le sezioni record Lead sono About/Get in Touch/Segment/History | Osservato (layout) | Verificare campi per sezione con inline edit |
+| AS1 | The org's Opportunity stages are `Qualify→Meet & Present→Propose→Negotiate→Closed Won→Closed Lost` | Observed (New Opp picklist) | Create 1 opp per stage and verify Path/Kanban |
+| AS2 | The Lead status ladder is `New→Contacted→Nurturing→Unqualified→Converted` | Observed (record Path) | Create a lead and move its status along the Path |
+| AS3 | Conversion creates Account+Contact+Opportunity in a single transaction | Observed (modal + helper text) | Convert a demo lead and verify the 3 records + timeline |
+| AS4 | Account related lists are Contacts/Opportunities/Cases | Observed | Populate and verify counts/actions |
+| AS5 | Lead record sections are About/Get in Touch/Segment/History | Observed (layout) | Verify fields per section with inline edit |
 
-## Domande aperte (non ancora osservate/testate)
-| # | Domanda | Area | Priorità |
+## Open questions (not yet observed/tested)
+| # | Question | Area | Priority |
 |---|---|---|---|
-| Q1 | Come si comporta il **filter builder**: operatori per tipo, AND/OR, gruppi, date relative? | filter-builder | alta |
-| Q2 | Il **Kanban** supporta drag&drop reale + conferme al cambio fase? Totali per colonna? | kanban | alta |
-| Q3 | Comportamento **inline edit**: batch save bar, validazioni, campi non editabili? | inline-edit | alta |
-| Q4 | **Validazioni** required + messaggi errore su ogni modale (Lead/Account/Contact/Opp)? | validation | alta |
-| Q5 | **Unsaved changes**: warning alla chiusura modale con modifiche? | unsaved-changes | media |
-| Q6 | **Bulk actions** disponibili per riga/selezione multipla (cambia owner, elimina, ecc.)? | bulk-actions | alta |
-| Q7 | **Saved views**: creazione/clona/rinomina/condivisione/filtri — flusso completo? | saved-views | media |
-| Q8 | **Note & File**: composer, allegati, related list, dove vivono? | activity/files | media |
-| Q9 | **Casi (Cases)**: oggetto disponibile? campi? relazione Account/Contact? | cases | bassa |
-| Q10 | **Split/Doppia visualizzazione**: layout e comportamento? | split-view | bassa |
-| Q11 | Campi Lead completi + picklist (Valutazione, Fonte lead, Settore, N. dipendenti)? | field-catalog | alta |
-| Q12 | Categoria di previsione (forecast) valori? Motivo perdita esiste su Closed Lost? | opportunity | media |
-| Q13 | Comportamento **paginazione** con molti record (>50)? | pagination | media |
+| Q1 | How does the **filter builder** behave: operators per type, AND/OR, groups, relative dates? | filter-builder | high |
+| Q2 | Does **Kanban** support real drag&drop + stage-change confirmations? Column totals? | kanban | high |
+| Q3 | **Inline edit** behavior: batch save bar, validation, non-editable fields? | inline-edit | high |
+| Q4 | Required **validation** + error messages on every modal (Lead/Account/Contact/Opp)? | validation | high |
+| Q5 | **Unsaved changes**: warning when closing a modal with pending edits? | unsaved-changes | medium |
+| Q6 | **Bulk actions** available per row/multi-select (change owner, delete, etc.)? | bulk-actions | high |
+| Q7 | **Saved views**: create/clone/rename/share/filter — full flow? | saved-views | medium |
+| Q8 | **Notes & Files**: composer, attachments, related list, where do they live? | activity/files | medium |
+| Q9 | **Cases**: object available? fields? Account/Contact relationship? | cases | low |
+| Q10 | **Split/dual view**: layout and behavior? | split-view | low |
+| Q11 | Full Lead fields + picklists (Rating, Lead source, Industry, # of employees)? | field-catalog | high |
+| Q12 | Forecast category values? Does a loss reason exist on Closed Lost? | opportunity | medium |
+| Q13 | **Pagination** behavior with many records (>50)? | pagination | medium |
 
-## Elementi potenzialmente NON verificabili nella demo (⛔ — motivare + procedura futura)
-| # | Elemento | Perché | Procedura di verifica futura |
+## Elements potentially NOT verifiable in the demo (⛔ — justify + future procedure)
+| # | Element | Why | Future verification procedure |
 |---|---|---|---|
-| NV1 | Permessi/sharing multi-utente reali | La demo ha 1 solo utente; non posso creare utenti/ruoli | Documentare da conoscenza pregressa dell'org di riferimento + testare in un'org multi-utente o via ruoli Laravel proposti |
-| NV2 | Automazioni/Flow/validation rule server-side | Vietato toccarle e non sempre visibili | Dedurre dai comportamenti UI; segnare come "Da verificare" |
-| NV3 | Forecast/Quote/Products se non abilitati | Feature non attive nella trial | Segnare "Da verificare"; proporre modello Laravel opzionale (V3) |
-| NV4 | Performance con migliaia di record | Non popolabile realisticamente | Definire target + test di performance Laravel in `testing-strategy.md` |
+| NV1 | Real multi-user permissions/sharing | The demo has 1 user only; can't create users/roles | Document from prior knowledge of the reference org + test in a multi-user org or via proposed Laravel roles |
+| NV2 | Server-side automation/Flow/validation rules | Off-limits to touch and not always visible | Infer from UI behavior; mark as "To verify" |
+| NV3 | Forecast/Quotes/Products if not enabled | Feature not active in the trial | Mark "To verify"; propose an optional Laravel model (V3) |
+| NV4 | Performance with thousands of records | Can't realistically populate | Define targets + Laravel performance tests in `testing-strategy.md` |
 
-## Note di ripresa (per continuità tra turni)
-- Sessione org di riferimento: stato salvato in `scratchpad/sess/session-state.json` (riutilizzabile finché valido; a scadenza serve nuovo OTP dall'utente).
-- Toolkit di automazione: script in `scratchpad/crmdriver/` (Playwright, `channel: chrome`).
-- **Prossimo punto non verificato:** creazione primo dataset Lead + test New-Lead modal (vedi `definition-of-done.md` → Prossimo ciclo).
+## Resume notes (for continuity across sessions)
+- Reference-org session: state saved in `scratchpad/sess/session-state.json` (reusable while valid; needs a new OTP from the user once it expires).
+- Automation toolkit: scripts in `scratchpad/crmdriver/` (Playwright, `channel: chrome`).
+- **Next unverified item:** create the first Lead dataset + test the New-Lead modal (see `definition-of-done.md` → Next cycle).

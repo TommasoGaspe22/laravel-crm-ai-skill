@@ -1,14 +1,14 @@
-# Opportunity pipeline & Kanban (indice)
+# Opportunity pipeline & Kanban (index)
 
-Documento ombrello che collega i sistemi della pipeline Opportunità. Fonte: **Osservato/Testato**.
+Umbrella document linking the Opportunity pipeline systems. Source: **Observed/Tested**.
 
-- **Oggetto & record page:** `opportunity-record-page.md` — campi (About/Status), azioni, related (Ruoli referenti/File/Fatture).
-- **Fasi & transizioni:** `stage-transition-system.md` — Path `Qualify→…→Chiuso`, commit due-step, guida per fase (Testato: Qualify→Propose).
-- **Kanban:** `kanban-system.md` — board per fase, conteggi + somme €, card con drag handle (Testato); drag&drop V2.
-- **Pipeline & metriche:** `pipeline-system.md` — viste, forecast pesato, win rate.
-- **Dati:** `data-model-and-migrations.md` (`crm_opportunities`).
-- **Vincolo list view:** Kanban/Filtri solo su viste reali, non su "Recenti" (Testato — `list-view-system.md`).
+- **Object & record page:** `opportunity-record-page.md` — fields (About/Status), actions, related lists (Contact Roles/Files/Invoices).
+- **Stages & transitions:** `stage-transition-system.md` — Path `Qualify→…→Closed`, two-step commit, per-stage guidance (Tested: Qualify→Propose).
+- **Kanban:** `kanban-system.md` — board by stage, counts + € sums, cards with a drag handle (Tested); drag&drop V2.
+- **Pipeline & metrics:** `pipeline-system.md` — views, weighted forecast, win rate.
+- **Data:** `data-model-and-migrations.md` (`crm_opportunities`).
+- **List-view constraint:** Kanban/Filters only on real views, not on "Recent" (Tested — `list-view-system.md`).
 
-**V1:** oggetto + fasi + Path + record page + vista "per fase" raggruppata + metriche base. **V2:** Kanban drag&drop + chiusura modale + forecast. **V3:** prodotti/quote/team.
+**V1:** object + stages + Path + record page + grouped "by stage" view + basic metrics. **V2:** Kanban drag&drop + closing modal + forecast. **V3:** products/quotes/teams.
 
-**Da verificare:** drag&drop reale + conferme; chiusura Won/Lost (stato+motivo persa); auto-probabilità/forecast per fase; performance con molte card.
+**To verify:** real drag&drop + confirmations; Won/Lost closing (status+loss reason); auto-probability/forecast per stage; performance with many cards.

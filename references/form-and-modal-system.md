@@ -1,60 +1,60 @@
 # Form & modal system
 
-**Scope:** anatomia e comportamento delle modali create/edit/convert/confirm, con proposta Laravel (componente `x-crm.record-modal` + Form Request). Fonte: **Osservato** (New Lead, New Opportunità, Converti) + **Testato dinamicamente** (validazione empty-save su New Lead).
+**Scope:** anatomy and behavior of create/edit/convert/confirm modals, with a Laravel proposal (`x-crm.record-modal` component + Form Request). Source: **Observed** (New Lead, New Opportunity, Convert) + **Dynamically tested** (empty-save validation on New Lead).
 
-## Indice
-1. Anatomia comune modale · 2. New/Edit record · 3. Validazione & errori · 4. Convert · 5. Confirm/Delete · 6. Unsaved changes · 7. Laravel · 8. Priorità · 9. Open questions
+## Index
+1. Common modal anatomy · 2. New/Edit record · 3. Validation & errors · 4. Convert · 5. Confirm/Delete · 6. Unsaved changes · 7. Laravel · 8. Priority · 9. Open questions
 
-## 1. Anatomia comune (Osservato)
-- **Trigger:** pulsante `Nuovo`/`Modifica`/azione riga/azione record.
-- **Overlay** scuro modale, contenuto centrato, `X` in alto a destra.
-- **Header:** titolo `Crea {Oggetto}` / `Modifica {Oggetto}`. Nota `* = Informazioni richieste` in alto a destra.
-- **Body:** **sezioni** con header grigio che raggruppano i campi; scroll interno se lungo; layout a 2 colonne su desktop.
-- **Footer:** `Annulla` · (`Salva e Nuovo`) · `Salva` (primario). Sulla conversione: `Annulla · Converti`.
-- **Campi:** text, textarea, date (icona calendario), number, currency, **picklist** (combobox ▾ con `role=listbox/option`), **lookup** (ricerca con lente, "N corrispondenze"), checkbox, owner (lookup User).
+## 1. Common anatomy (Observed)
+- **Trigger:** `New`/`Edit`/row action/record action button.
+- Dark modal **overlay**, centered content, `X` top-right.
+- **Header:** title `Create {Object}` / `Edit {Object}`. Note `* = Required Information` top-right.
+- **Body:** **sections** with grey headers grouping the fields; internal scroll if long; 2-column layout on desktop.
+- **Footer:** `Cancel` · (`Save & New`) · `Save` (primary). On conversion: `Cancel · Convert`.
+- **Fields:** text, textarea, date (calendar icon), number, currency, **picklist** (combobox ▾ with `role=listbox/option`), **lookup** (magnifier search, "N matches"), checkbox, owner (User lookup).
 
-## 2. New / Edit — specifiche per oggetto
+## 2. New / Edit — per-object specifics
 
-### New Lead (Osservato + Testato dinamicamente)
-- Sezioni: **About · Get in Touch · Segment**.
-- Campi: vedi `field-catalog.md` (Lead). Compound **Nome e cognome** (Titolo+Nome+Cognome).
-- **Required bloccanti (Testato):** `Cognome`, `Società`. `Stato lead` è `*` ma con default → non blocca.
-- Picklist: `Stato lead`, `Valutazione`, `Fonte del lead`, `Settore`.
+### New Lead (Observed + Dynamically tested)
+- Sections: **About · Get in Touch · Segment**.
+- Fields: see `field-catalog.md` (Lead). Compound **Full name** (Salutation+First+Last).
+- **Blocking required fields (Tested):** `Last name`, `Company`. `Lead status` is `*` but has a default → doesn't block.
+- Picklists: `Lead status`, `Rating`, `Lead source`, `Industry`.
 
-### New Opportunità (Osservato)
-- Sezioni: **About** (Nome*, Account* lookup, Data chiusura*, Ammontare, Descrizione, Titolare) · **Status** (Fase*, Probabilità %, Categoria previsione*, Fase successiva).
-- Footer: `Annulla · Salva e Nuovo · Salva`.
+### New Opportunity (Observed)
+- Sections: **About** (Name*, Account* lookup, Close date*, Amount, Description, Owner) · **Status** (Stage*, Probability %, Forecast category*, Next step).
+- Footer: `Cancel · Save & New · Save`.
 
-### New Account / Contact (Da verificare — catturare New modal)
-- Account: Nome account* + Tipo(picklist) + Sito Web + Telefono + indirizzi + Società controllante(lookup self).
-- Contact: Nome e cognome* + Nome account(lookup) + Qualifica + Email + Telefono + Fa capo a(lookup self).
+### New Account / Contact (To verify — capture the New modal)
+- Account: Account name* + Type (picklist) + Website + Phone + addresses + Parent account (self lookup).
+- Contact: Full name* + Account name (lookup) + Title + Email + Phone + Reports To (self lookup).
 
-## 3. Validazione & errori (Testato dinamicamente — New Lead)
-- **Empty-save:** i campi required mostrano errore inline **"Compila questo campo."** sotto il campo, bordo rosso, focus sul primo invalido; il salvataggio è bloccato, la modale resta aperta.
-- **Osservato/Dedotto:** email valida per formato; date con date-picker; number/currency numerici. Messaggi in italiano.
-- **Da verificare:** validazioni cross-field, lunghezze massime, messaggi per formato email/URL, errori server-side (validation rule) → non testabili senza campi/regole custom.
+## 3. Validation & errors (Dynamically tested — New Lead)
+- **Empty-save:** required fields show an inline error **"Fill in this field."** under the field, red border, focus on the first invalid one; the save is blocked, the modal stays open.
+- **Observed/Deduced:** email format validated; dates via date-picker; numeric number/currency.
+- **To verify:** cross-field validation, max lengths, email/URL format messages, server-side errors (validation rule) → not testable without custom fields/rules.
 
-## 4. Convert modal (Osservato — Lead → 3 record)
-Titolo **"Converti lead"**. Tre sezioni con radio **Crea / Scegli**: Account · Referente · Opportunità (+ checkbox "Non creare un'opportunità"). Bottom: `*Titolare record`, `*Stato convertito` (default "Qualificato"). Dettaglio in `lead-conversion-system.md`.
+## 4. Convert modal (Observed — Lead → 3 records)
+Title **"Convert Lead"**. Three sections with **Create / Choose** radios: Account · Contact · Opportunity (+ "Don't create an opportunity" checkbox). Bottom: `*Record owner`, `*Converted status` (default "Qualified"). Detail in `lead-conversion-system.md`.
 
-## 5. Confirm / Delete (Da verificare)
-Atteso: dialog di conferma con messaggio + `Annulla`/`Elimina`. Da testare dinamicamente (eliminando un record demo) → documentare testo, comportamento cascata, toast.
+## 5. Confirm / Delete (To verify)
+Expected: confirmation dialog with a message + `Cancel`/`Delete`. To test dynamically (by deleting a demo record) → document the text, cascade behavior, toast.
 
-## 6. Unsaved changes (Da verificare)
-Atteso: warning alla chiusura modale con modifiche non salvate. Da testare (aprire, modificare, chiudere con X).
+## 6. Unsaved changes (To verify)
+Expected: a warning when closing a modal with unsaved changes. To test (open, edit, close with X).
 
-## 7. Proposta Laravel
-- **Componente** `x-crm.record-modal`: props `title`, `:sections`, `:footer`, slot per campi; Alpine `modal` (focus-trap, Esc, backdrop). Campi via `x-crm.field.*` (`field-catalog.md`/`component-catalog.md`).
-- **Validazione:** `FormRequest` per oggetto (es. `StoreLeadRequest`) → regole `required`, `email`, `numeric`, `date`, `in:{picklist}`; messaggi IT ("Compila questo campo." → `:attribute è obbligatorio`). Mostrare errori inline sotto il campo (mirror del riferimento).
-- **Azioni:** `Salva` (store/update), `Salva e Nuovo` (redirect a create), `Annulla` (chiudi). Toast su successo (`session('status')`).
-- **Unsaved changes:** Alpine `dirty` flag + `beforeunload`/conferma su chiusura.
-- **Rischio implementativo:** compound Name → in Laravel campi separati; lookup async → endpoint dedicato con debounce + policy; picklist → config/enum condivisi con validazione.
+## 7. Proposed Laravel design
+- **Component** `x-crm.record-modal`: props `title`, `:sections`, `:footer`, a field slot; Alpine `modal` (focus-trap, Esc, backdrop). Fields via `x-crm.field.*` (`field-catalog.md`/`component-catalog.md`).
+- **Validation:** `FormRequest` per object (e.g. `StoreLeadRequest`) → rules `required`, `email`, `numeric`, `date`, `in:{picklist}`; localized messages ("Fill in this field." → `:attribute is required`). Show inline errors under the field (mirrors the reference org).
+- **Actions:** `Save` (store/update), `Save & New` (redirect to create), `Cancel` (close). Toast on success (`session('status')`).
+- **Unsaved changes:** Alpine `dirty` flag + `beforeunload`/confirmation on close.
+- **Implementation risk:** compound Name → separate fields in Laravel; async lookup → dedicated endpoint with debounce + policy; picklist → shared config/enum with validation.
 
-## 8. Priorità
-- **V1:** New/Edit Lead/Account/Contact/Opportunità, validazione required inline, Convert, Confirm/Delete, toast.
-- **V2:** Salva e Nuovo, unsaved-changes warning, lookup async ricco, sezioni collassabili.
-- **V3:** record types multipli, campi dipendenti/condizionali avanzati.
-- **Non replicare:** dynamic forms server-driven complessi, page-layout assignment per profilo.
+## 8. Priority
+- **V1:** New/Edit Lead/Account/Contact/Opportunity, inline required validation, Convert, Confirm/Delete, toast.
+- **V2:** Save & New, unsaved-changes warning, rich async lookup, collapsible sections.
+- **V3:** multiple record types, advanced dependent/conditional fields.
+- **Do not replicate:** complex server-driven dynamic forms, per-profile page-layout assignment.
 
 ## 9. Open questions (→ `open-questions-and-assumptions.md`)
-Q4 validazioni complete per oggetto · Q5 unsaved-changes · New Account/Contact modal · Confirm/Delete testo+cascata · picklist values (Tipo, Categoria previsione, Fonte, Settore).
+Q4 complete per-object validation · Q5 unsaved-changes · New Account/Contact modal · Confirm/Delete text+cascade · picklist values (Type, Forecast category, Source, Industry).

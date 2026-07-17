@@ -1,45 +1,45 @@
-# Kanban system (Opportunità pipeline board)
+# Kanban system (Opportunity pipeline board)
 
-**Scope:** vista Kanban delle Opportunità raggruppata per Fase. Fonte: **Testato dinamicamente** (2026-07-08, board reale con 2 opportunità demo in fasi diverse) + **Osservato**. Blueprint Laravel (SortableJS, V2).
+**Scope:** the Kanban view of Opportunities grouped by Stage. Source: **Dynamically tested** (2026-07-08, real board with 2 demo opportunities at different stages) + **Observed**. Laravel blueprint (SortableJS, V2).
 
-## Indice
-1. Come si attiva · 2. Anatomia (testato) · 3. Comportamenti · 4. Limitazioni Osservate · 5. Laravel · 6. Priorità · 7. Open questions
+## Index
+1. How it's activated · 2. Anatomy (tested) · 3. Behaviors · 4. Observed limitations · 5. Laravel · 6. Priority · 7. Open questions
 
-## 1. Attivazione (Osservato/Testato)
-- Toolbar list view → pulsante **"Seleziona visualizzazione elenco"** (icona griglia con ▾, a destra del gear "Controlli visualizzazione elenco") → opzioni **Tabella / Kanban / Doppia visualizzazione (Split)**.
-- **⚠️ Vincolo (Osservato):** disponibile solo su list view reali (es. **"Tutte le opportunità"**), **NON** sulla vista di sistema **"Recenti" (Recently Viewed)**, dove Kanban/Filtri/Grafici sono disabilitati ("I filtri/grafici non sono disponibili per questa visualizzazione elenco"). → In Laravel: le viste "recenti/sistema" non offrono kanban/filtri; solo le viste salvate/utente sì.
+## 1. Activation (Observed/Tested)
+- List-view toolbar → **"Select list view display"** button (grid icon ▾, right of the "List view controls" gear) → options **Table / Kanban / Split View**.
+- **⚠️ Constraint (Observed):** available only on real list views (e.g. **"All Opportunities"**), **NOT** on the **"Recent" (Recently Viewed)** system view, where Kanban/Filters/Charts are disabled ("Filters/Charts aren't available for this list view"). → In Laravel: "recent/system" views don't offer kanban/filters; only saved/user views do.
 
-## 2. Anatomia board (Testato dinamicamente)
-- **Colonne = valori picklist di raggruppamento** (default **Fase**): `Qualify · Meet & Present · Propose · Negotiate · Closed Won` (le closed sono colonne finali). Header colonna = **chevron blu** con **nome fase + (conteggio)**.
-- **Somma importi per colonna:** sotto l'header, totale `€` (es. `0 €` perché Ammontare vuoto). → aggrega `SUM(amount)` per fase.
-- **Card opportunità:** maniglia **drag** (⋮⋮) a sinistra, **nome/account** (link), **data chiusura**, menu **▾ azioni** per card. (Con Ammontare valorizzato comparirebbe anche l'importo.)
-- **Meta line** identica alla tabella: "N elementi • Ordinati per … • Aggiornato …".
-- **Filtri** e ricerca condivisi con la vista tabella (pannello Filtri sulla destra).
+## 2. Board anatomy (Dynamically tested)
+- **Columns = grouping picklist values** (default **Stage**): `Qualify · Meet & Present · Propose · Negotiate · Closed Won` (closed stages are the final columns). Column header = **blue chevron** with **stage name + (count)**.
+- **Sum per column:** below the header, a `€` total (e.g. `€0` because Amount is empty). → aggregates `SUM(amount)` per stage.
+- **Opportunity card:** **drag** handle (⋮⋮) on the left, **name/account** (link), **close date**, per-card **▾ actions** menu. (With Amount set, the value would also show.)
+- **Meta line** identical to the table: "N items • Sorted by … • Updated …".
+- **Filters** and search shared with the table view (Filters panel on the right).
 
-## 3. Comportamenti (Osservato / Testato)
-- **Drag & drop card tra colonne** → cambia Fase. Osservato: **maniglia drag (⋮⋮) presente** su ogni card. **Testato:** il drag automatico via Playwright (HTML5 dragTo) **non** aziona il drop custom dell'org di riferimento (la card non si sposta) → il meccanismo esiste ma va verificato manualmente; in Laravel useremo **SortableJS** (dip. V2) con `PATCH stage` al drop. Verso Closed → apre la modale **"Chiudi quest'opportunità"** (fase chiusa required, vedi `stage-transition-system.md`).
-- **Raggruppamento alternativo:** l'org di riferimento consente cambiare il campo di raggruppamento (Da verificare quali campi).
-- **Colonne con 0 record:** mostrate comunque (es. Meet & Present (0), Negotiate (0)).
-- **Chiusura:** spostare in Closed Won/Lost → **Da verificare** (probabile dialog motivo/stato chiusura).
-- **Performance con molte card:** Da verificare (non popolabile realisticamente nella demo → target in `testing-strategy.md`).
+## 3. Behaviors (Observed / Tested)
+- **Drag & drop a card between columns** → changes Stage. Observed: **drag handle (⋮⋮) present** on every card. **Tested:** automated drag via Playwright (HTML5 dragTo) **doesn't** trigger the reference org's custom drop (the card doesn't move) → the mechanism exists but needs manual verification; in Laravel we'll use **SortableJS** (V2 dep) with `PATCH stage` on drop. Moving to Closed → opens the **"Close this opportunity"** modal (closed stage required, see `stage-transition-system.md`).
+- **Alternative grouping:** the reference org allows changing the grouping field (which fields, **to verify**).
+- **Columns with 0 records:** still shown (e.g. Meet & Present (0), Negotiate (0)).
+- **Closing:** moving to Closed Won/Lost → **to verify** (likely a reason/closing-status dialog).
+- **Performance with many cards:** to verify (can't realistically populate in the demo → target in `testing-strategy.md`).
 
-## 4. Limitazioni / Non replicare
-- **Non replicare (V1):** raggruppamenti multipli avanzati, forecast inline nel kanban, kanban su oggetti senza pipeline.
-- La board dell'org di riferimento è client-side pesante; nel target app è **V2** (dopo che `stage` è persistito e stabile).
+## 4. Limitations / Do not replicate
+- **Do not replicate (V1):** advanced multi-grouping, inline forecast in the kanban, kanban on objects without a pipeline.
+- The reference org's board is heavy client-side; in the target app it's **V2** (once `stage` is persisted and stable).
 
-## 5. Blueprint Laravel (Proposto per Laravel)
-- **Route/vista:** `/dashboard/crm/opportunities?view=…&display=kanban`.
-- **Componente** `x-crm.kanban` + `x-crm.kanban-card` (vedi `component-catalog.md`). Colonne = `config('crm.crm_opportunity_stages')`; card = opportunità.
-- **Dati:** query opportunità della vista, raggruppate per `stage`; per colonna: `count()` + `sum(amount)`. Eager-load account per evitare N+1.
-- **Drag & drop:** **SortableJS** (dipendenza V2). On drop → `PATCH /opportunities/{id}/stage {stage}` (Action `ChangeStage`, vedi `stage-transition-system.md`): valida transizione, aggiorna `stage`/`probability`/`is_closed`, scrive `crm_activities` "cambio fase", ritorna toast. Ottimistic UI con rollback su errore.
-- **Chiusura (Won/Lost):** drop su colonna closed → modale "motivo chiusura" prima del commit.
-- **Rischio implementativo:** concorrenza (due utenti spostano la stessa card) → usare `updated_at` optimistic lock; validare che la fase target sia ammessa; permessi (policy `update`).
-- **Accessibilità:** drag&drop deve avere alternativa tastiera (menu "Sposta a fase…" nella card ▾).
+## 5. Laravel blueprint (Proposed for Laravel)
+- **Route/view:** `/dashboard/crm/opportunities?view=…&display=kanban`.
+- **Component** `x-crm.kanban` + `x-crm.kanban-card` (see `component-catalog.md`). Columns = `config('crm.crm_opportunity_stages')`; cards = opportunities.
+- **Data:** the view's opportunity query, grouped by `stage`; per column: `count()` + `sum(amount)`. Eager-load account to avoid N+1.
+- **Drag & drop:** **SortableJS** (V2 dependency). On drop → `PATCH /opportunities/{id}/stage {stage}` (`ChangeStage` Action, see `stage-transition-system.md`): validates the transition, updates `stage`/`probability`/`is_closed`, writes a "stage change" `crm_activities` entry, returns a toast. Optimistic UI with rollback on error.
+- **Closing (Won/Lost):** dropping on the closed column → "closing reason" modal before committing.
+- **Implementation risk:** concurrency (two users move the same card) → use `updated_at` optimistic lock; validate the target stage is allowed; permissions (`update` policy).
+- **Accessibility:** drag&drop needs a keyboard alternative (a "Move to stage…" item in the card's ▾ menu).
 
-## 6. Priorità
-- **V1:** vista "per fase" **raggruppata read-only** (lista raggruppata per stage con conteggi/somme) + cambio fase via menu card/record Path (senza drag).
-- **V2:** Kanban con **drag & drop** (SortableJS), somme per colonna, modale chiusura.
-- **V3:** raggruppamenti alternativi, WIP limit, forecast inline.
+## 6. Priority
+- **V1:** **read-only grouped "by stage"** view (list grouped by stage with counts/sums) + stage change via card menu/record Path (no drag).
+- **V2:** Kanban with **drag & drop** (SortableJS), per-column sums, closing modal.
+- **V3:** alternative groupings, WIP limits, inline forecast.
 
 ## 7. Open questions → `open-questions-and-assumptions.md`
-Q2 (drag&drop reale + conferme), chiusura Won/Lost dialog, raggruppamenti alternativi, performance.
+Q2 (real drag&drop + confirmations), Won/Lost closing dialog, alternative groupings, performance.

@@ -1,22 +1,22 @@
 # Validation & error system
 
-**Scope:** validazioni, messaggi d'errore, stati errore. Fonte: **Testato dinamicamente** (empty-save New Lead) + **Osservato**.
+**Scope:** validations, error messages, error states. Source: **Dynamically tested** (empty-save on New Lead) + **Observed**.
 
-## Testato / Osservato
-- **Required inline (Testato):** salvataggio con campi obbligatori vuoti → errore **"Compila questo campo."** sotto il campo, bordo rosso, focus sul primo invalido, salvataggio bloccato, modale aperta. (Lead: Cognome, Società.)
-- **Osservato/Dedotto:** formato email/URL validato; date via date-picker; number/currency numerici; picklist con valori ammessi.
-- **Da verificare:** validazioni cross-field, lunghezze massime, messaggi per formato, errori server-side (validation rule custom → nell'org demo non testabili senza toccare config: **⛔** documentare da conoscenza), errori di salvataggio (toast di errore), conflitti di concorrenza.
+## Tested / Observed
+- **Inline required (Tested):** saving with empty required fields → **"Fill in this field."** error under the field, red border, focus on the first invalid field, save blocked, modal stays open. (Lead: Last name, Company.)
+- **Observed/Deduced:** email/URL format validated; dates via date-picker; numeric number/currency; picklist with allowed values.
+- **To verify:** cross-field validation, max lengths, format messages, server-side errors (custom validation rule → not testable in the demo org without touching config: **⛔** document from prior knowledge), save errors (error toast), concurrency conflicts.
 
-## Proposta Laravel (Proposto per Laravel)
-- **FormRequest** per oggetto/azione: `required`, `email`, `url`, `numeric`, `date` (≥ oggi dove serve), `in:{picklist}`, `max:`; messaggi IT ("Compila questo campo." → `Il campo :attribute è obbligatorio.`).
-- **Errori inline** sotto il campo (mirror del riferimento); riepilogo in cima alla modale se >1.
-- **Errori server/azione:** toast di errore (`x-crm.toast`); nessun 500 → catch + messaggio leggibile.
-- **Concorrenza:** optimistic lock (`updated_at`) → 409 con messaggio "record modificato da altri".
-- **Business rules** (mirror validation rule del riferimento): in `FormRequest`/Action (es. non chiudere opportunità senza motivo persa) — dominio esplicito, testato.
-- **Rischio implementativo:** validazione lato server SEMPRE (mai fidarsi del client); sanitizzazione; messaggi non espongono dettagli sensibili.
+## Proposed Laravel design (Proposed for Laravel)
+- **FormRequest** per object/action: `required`, `email`, `url`, `numeric`, `date` (≥ today where relevant), `in:{picklist}`, `max:`; localized messages ("Fill in this field." → `The :attribute field is required.`).
+- **Inline errors** under the field (mirrors the reference org); a summary at the top of the modal if >1.
+- **Server/action errors:** error toast (`x-crm.toast`); no 500s → catch + a readable message.
+- **Concurrency:** optimistic lock (`updated_at`) → 409 with a "record modified by someone else" message.
+- **Business rules** (mirror the reference org's validation rules): in `FormRequest`/Action (e.g. don't close an opportunity without a loss reason) — explicit, tested domain logic.
+- **Implementation risk:** ALWAYS validate server-side (never trust the client); sanitization; messages that don't leak sensitive details.
 
-## Priorità
-- **V1:** required + tipo + picklist inline, messaggi IT, toast errore, no-500. **V2:** cross-field, optimistic lock, business rules ricche. **V3:** regole configurabili (validation-rule-like).
+## Priority
+- **V1:** required + type + inline picklist, localized messages, error toast, no 500s. **V2:** cross-field, optimistic lock, rich business rules. **V3:** configurable (validation-rule-like) rules.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q4: validazioni complete per oggetto; NV2 (validation rule/Flow server-side non ispezionabili → dedurre).
+Q4: complete validation per object; NV2 (server-side validation rule/Flow not inspectable → infer).

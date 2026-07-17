@@ -1,35 +1,35 @@
 # Filter builder system
 
-**Scope:** pannello filtri delle list view (trattato come modulo a sé). Fonte: **Osservato** (pannello reale su "Tutte le opportunità"); operatori dettagliati **Da verificare** (test dinamico dei singoli operatori ancora da fare).
+**Scope:** the list-view filters panel (treated as its own module). Source: **Observed** (real panel on "All Opportunities"); detailed operators **to verify** (dynamic testing of individual operators still to do).
 
-## Osservato / Testato dinamicamente (2026-07-08)
-- **Trigger:** pulsante **Filtri** nella toolbar (abilitato **solo** su viste reali es. "Tutte le opportunità", non su "Recenti").
-- **Pannello a destra** ("Filtri", X per chiudere), non overlay bloccante (tabella visibile a sinistra). Header: **Annulla · Salva (▾ = Salva / Salva come)**.
-- **Scope:** **"Filtra per titolare"** (Tutte / Mie / coda), valore "Tutte le opportunità".
-- **Logica:** **"Corrispondenza di tutti questi filtri"** (= AND di default) + **"Aggiungi logica dei filtri"** (espressione booleana custom AND/OR/NOT con numeri di condizione).
-- **Filtri:** **"Aggiungi filtro"** → chip **"Nuovo filtro*"** (evidenziato) da configurare **Campo → Operatore → Valore**; **X** per rimuovere; **"Rimuovi tutto"**.
-- **Salvataggio:** Salva applica; "Salva come" crea una nuova vista dalla combinazione filtri.
-- **Da verificare (residuo):** elenco operatori esatti per tipo campo (aprire il chip → campo → operatore); date relative; indicatori chip filtri attivi sopra la tabella; comportamento zero risultati; persistenza. *(Struttura confermata; i valori operatore standard dell'org di riferimento sono in §Architettura.)*
+## Observed / Dynamically tested (2026-07-08)
+- **Trigger:** **Filters** button in the toolbar (enabled **only** on real views e.g. "All Opportunities", not on "Recent").
+- **Right panel** ("Filters", X to close), not a blocking overlay (table still visible on the left). Header: **Cancel · Save (▾ = Save / Save As)**.
+- **Scope:** **"Filter by owner"** (All / Mine / queue), value "All Opportunities".
+- **Logic:** **"Match all these filters"** (= AND by default) + **"Add filter logic"** (custom boolean expression AND/OR/NOT with condition numbers).
+- **Filters:** **"Add filter"** → **"New filter*"** chip (highlighted) to configure **Field → Operator → Value**; **X** to remove; **"Remove all"**.
+- **Saving:** Save applies; "Save As" creates a new view from the filter combination.
+- **To verify (remaining):** exact operator list per field type (open the chip → field → operator); relative dates; active-filter chip indicators above the table; zero-results behavior; persistence. *(Structure confirmed; the reference org's standard operator values are in §Architecture.)*
 
-## Architettura Laravel (Proposto per Laravel)
-Modulo dedicato (mirror dell'org di riferimento ma sicuro e performante):
-- `FilterDefinition` (elenco filtri di una vista) · `FilterField` (campo filtrabile: nome, tipo, label) · `FilterOperator` (per tipo campo) · `FilterGroup` (AND/OR annidati) · `AppliedFilter` (campo+operatore+valore) · `FilterValueResolver` (parse valori, incl. **date relative** "oggi/±N giorni") · `QueryBuilderAdapter` (traduce in Eloquent/SQL) · `SavedView` (persistenza) · `FilterPolicy` (campi filtrabili per ruolo) · `FilterSerialization` (query-string ↔ struttura, viste condivisibili via URL).
-- **Operatori per tipo:**
-  - testo: `=`, `≠`, `contiene`, `non contiene`, `inizia con`
-  - numero/importo: `=`, `≠`, `<`, `≤`, `>`, `≥`, `tra`
-  - data: assolute (`=`,`<`,`>`,`tra`) + **relative** (`oggi`, `ieri`, `ultimi N giorni`, `questo mese`, `prossimi N giorni`)
-  - picklist/enum: `in`, `non in`
-  - booleano: `vero/falso`
-  - owner/lookup: `= me`, `= utente`, `in team`
-- **Query sicura:** whitelist campi+operatori (mai input diretto in SQL); binding parametrico (anti SQL-injection); indici sui campi filtrabili (`stage`, `owner_id`, `status`, date); timezone consistente su date relative; limiti di complessità (max N condizioni) per performance; evitare N+1 con eager-load.
-- **Persistenza & URL:** filtri serializzati in query-string (viste bookmarkabili/condivisibili) + `saved_views` per salvarli.
-- **UI:** `x-crm.filter-panel` (drawer): scope owner, lista condizioni (aggiungi/rimuovi/modifica), Applica/Reset, **chip filtri attivi** sopra la tabella, stato zero-risultati curato.
+## Laravel architecture (Proposed for Laravel)
+Dedicated module (mirrors the reference org but safe and performant):
+- `FilterDefinition` (a view's filter list) · `FilterField` (filterable field: name, type, label) · `FilterOperator` (per field type) · `FilterGroup` (nested AND/OR) · `AppliedFilter` (field+operator+value) · `FilterValueResolver` (parses values, incl. **relative dates** "today/±N days") · `QueryBuilderAdapter` (translates to Eloquent/SQL) · `SavedView` (persistence) · `FilterPolicy` (filterable fields per role) · `FilterSerialization` (query-string ↔ structure, shareable views via URL).
+- **Operators per type:**
+  - text: `=`, `≠`, `contains`, `doesn't contain`, `starts with`
+  - number/amount: `=`, `≠`, `<`, `≤`, `>`, `≥`, `between`
+  - date: absolute (`=`,`<`,`>`,`between`) + **relative** (`today`, `yesterday`, `last N days`, `this month`, `next N days`)
+  - picklist/enum: `in`, `not in`
+  - boolean: `true/false`
+  - owner/lookup: `= me`, `= user`, `in team`
+- **Safe queries:** field+operator whitelist (never direct input into SQL); parameterized bindings (anti SQL-injection); indexes on filterable fields (`stage`, `owner_id`, `status`, dates); consistent timezone for relative dates; complexity limits (max N conditions) for performance; avoid N+1 with eager-load.
+- **Persistence & URL:** filters serialized in the query-string (bookmarkable/shareable views) + `saved_views` to save them.
+- **UI:** `x-crm.filter-panel` (drawer): owner scope, condition list (add/remove/edit), Apply/Reset, **active-filter chips** above the table, curated zero-results state.
 
-## Priorità
-- **V1:** filtri curati per oggetto (stato/fase/owner/canale/bucket follow-up/date range/flag) via query-string + chip attivi + reset. AND semplice.
-- **V2:** filter builder generico (campo/operatore/valore dinamici), date relative, salvataggio vista, OR.
-- **V3:** gruppi di condizioni annidati, logica custom, filtri cross-oggetto.
-- **Non replicare (V1):** logica booleana avanzata, filtri su campi formula/rollup.
+## Priority
+- **V1:** curated per-object filters (status/stage/owner/channel/follow-up bucket/date range/flag) via query-string + active chips + reset. Simple AND.
+- **V2:** generic filter builder (dynamic field/operator/value), relative dates, save view, OR.
+- **V3:** nested condition groups, custom logic, cross-object filters.
+- **Do not replicate (V1):** advanced boolean logic, filters on formula/rollup fields.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Q1 (operatori per tipo, AND/OR/gruppi, date relative, zero risultati, salvataggio, persistenza) — **da testare dinamicamente** aprendo e applicando filtri reali.
+Q1 (operators per type, AND/OR/groups, relative dates, zero results, saving, persistence) — **to test dynamically** by opening and applying real filters.

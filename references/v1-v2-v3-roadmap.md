@@ -1,35 +1,35 @@
-# Roadmap V1 / V2 / V3
+# V1 / V2 / V3 Roadmap
 
-**Scope:** prioritizzazione motivata di ogni funzione. Fonte: sintesi di tutti i `*-system.md`. Regola: non mettere tutto in V1; motivare.
+**Scope:** justified prioritization of every feature. Source: synthesis of all `*-system.md` files. Rule: don't put everything in V1; justify it.
 
-## V1 — CRM operativo essenziale (indispensabile al team commerciale)
-- **Oggetti:** Lead (su pipeline esistente), Account, Referente, Opportunità (+ Attività base). Relazioni + **conversione Lead**.
-- **List view:** tabella densa, ricerca, sort singolo, **filtri curati** (stato/fase/owner/canale/bucket/date/flag) via query-string + chip, **viste predefinite** + pin default, azioni riga, **select+bulk essenziali** (cambia stato/assegna/flag/elimina/esporta), paginazione, stati vuoto/loading/errore. Vista **"per fase" raggruppata** (Opportunità).
-- **Record page:** header+azioni, **detail sections + inline edit**, **Path** (Lead status, Opp fase) con commit + audit, **activity panel + timeline** (task/call/nota), related list principali, **elimina con conferma**.
-- **Conversione:** Account+Referente+Opportunità in transazione, dedup base, "no opportunità", audit.
-- **Quick actions:** contattato, esito, follow-up (+3/7/14), priorità, stato, nota, chiudi (won/lost+motivo).
-- **Trasversali:** policy owner (admin vs sales, delete admin-only, "assegnati a me"), validazione inline, toast, ricerca globale base, app-shell riuso + object-nav, audit azioni sensibili, seed demo, test.
-- *Motivazione:* copre il lavoro quotidiano (chi contattare, avanzare trattative, loggare attività) col minimo attrito; sfrutta dati/engine esistenti.
+## V1 — essential operational CRM (indispensable for the sales team)
+- **Objects:** Lead (on the existing pipeline), Account, Contact, Opportunity (+ basic Activities). Relations + **Lead conversion**.
+- **List view:** dense table, search, single sort, **curated filters** (status/stage/owner/channel/bucket/date/flag) via query-string + chips, **preset views** + default pin, row actions, **essential select+bulk** (change status/assign/flag/delete/export), pagination, empty/loading/error states. **Grouped "by stage"** view (Opportunity).
+- **Record page:** header+actions, **detail sections + inline edit**, **Path** (Lead status, Opp stage) with commit + audit, **activity panel + timeline** (task/call/note), main related lists, **delete with confirmation**.
+- **Conversion:** Account+Contact+Opportunity in one transaction, basic dedup, "no opportunity" option, audit.
+- **Quick actions:** contacted, outcome, follow-up (+3/7/14), priority, status, note, close (won/lost+reason).
+- **Cross-cutting:** owner policy (admin vs sales, delete admin-only, "assigned to me"), inline validation, toast, basic global search, app-shell reuse + object-nav, sensitive-action audit, demo seed, tests.
+- *Rationale:* covers the daily work (who to contact, moving deals forward, logging activity) with minimal friction; leverages existing data/engine.
 
-## V2 — CRM avanzato (produttività e controllo)
-- **Kanban drag&drop** (SortableJS) + somme colonna + chiusura won/lost modale.
-- **Filter builder** generico (campo/operatore/valore, date relative, salva vista, OR), **saved views utente** (CRUD+condivisione base).
-- **Colonne configurabili + resize** (per vista), **mass inline edit**, **split view**.
-- **Attività ricche:** eventi/calendario (FullCalendar), email registrata, **reminder/notifiche**, filtri timeline.
-- **Note/File** ricchi, related list con azioni inline+paginazione.
-- **Unsaved-changes** completo, ottimistic lock, business rules ricche.
-- **Ruoli team/manager**, owner-scope configurabile, audit ricco, ricerca (Scout), cache conteggi, jobs/queue per bulk/notifiche.
-- *Motivazione:* aumenta efficienza e governance quando il volume/uso cresce; introduce le uniche 2 dipendenze (SortableJS, FullCalendar) solo quando i dati le giustificano.
+## V2 — advanced CRM (productivity and control)
+- **Kanban drag&drop** (SortableJS) + column sums + won/lost closing modal.
+- **Generic filter builder** (field/operator/value, relative dates, save view, OR), **user saved views** (CRUD + basic sharing).
+- **Configurable + resizable columns** (per view), **mass inline edit**, **split view**.
+- **Rich activities:** events/calendar (FullCalendar), logged email, **reminders/notifications**, timeline filters.
+- **Rich Notes/Files**, related list with inline actions + pagination.
+- **Full unsaved-changes** handling, optimistic lock, rich business rules.
+- **Team/manager roles**, configurable owner-scope, rich audit, search (Scout), count caching, jobs/queue for bulk/notifications.
+- *Rationale:* increases efficiency and governance as volume/usage grows; introduces the only 2 dependencies (SortableJS, FullCalendar) only once the data justifies them.
 
-## V3 — Enterprise / opzionale
-- **Catalogo prodotti/listini/line items**, forecasting avanzato, **ruoli referenti M:N**, quote/preventivi.
-- **Field-level security**, sharing rules/team avanzati, viste condivise granulari, impersonation (se necessario).
-- **API pubblica**, integrazioni (email/telefonia/calendar esterni), import wizard ricco, virtualizzazione data-grid.
-- *Motivazione:* valore solo per organizzazioni strutturate; alto costo/complessità.
+## V3 — Enterprise / optional
+- **Product/price-book/line-item catalog**, advanced forecasting, **M:N contact roles**, quotes.
+- **Field-level security**, advanced sharing rules/teams, granular shared views, impersonation (if needed).
+- **Public API**, integrations (external email/telephony/calendar), rich import wizard, data-grid virtualization.
+- *Rationale:* value only for structured organizations; high cost/complexity.
 
-## Non replicare (dalla piattaforma di riferimento)
-Flow/Process Builder/automation builder · Report/Dashboard builder · AI assistant integrato · sharing rules/org-wide defaults complessi · app switcher/utility bar · multi-currency avanzata · page-layout editor per profilo · conversation insights · integrazioni chat embedded.
-*Motivazione:* funzioni-piattaforma non necessarie al flusso commerciale del target app, troppo pesanti/proprietarie o sostituibili con soluzioni più semplici.
+## Do not replicate (from the reference platform)
+Flow/Process Builder/automation builder · Report/Dashboard builder · built-in AI assistant · complex sharing rules/org-wide defaults · app switcher/utility bar · advanced multi-currency · per-profile page-layout editor · conversation insights · embedded chat integrations.
+*Rationale:* platform-only features not needed for the target app's sales flow, too heavy/proprietary, or replaceable with simpler solutions.
 
-## Criteri di promozione V1→V2→V3
-Una funzione sale di priorità solo se: (a) risolve un attrito reale osservato dal team, (b) i dati la giustificano (es. Kanban dopo che stage è stabile), (c) il costo/rischio è sostenibile sullo stack (Blade/Alpine/SQLite/Aruba).
+## V1→V2→V3 promotion criteria
+A feature only moves up in priority if: (a) it solves a real friction point observed by the team, (b) the data justifies it (e.g. Kanban once stage is stable), (c) the cost/risk is sustainable on the stack (Blade/Alpine/SQLite).

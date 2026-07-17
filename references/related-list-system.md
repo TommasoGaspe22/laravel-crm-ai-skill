@@ -1,24 +1,24 @@
 # Related list system
 
-**Scope:** liste correlate sulle record page. Fonte: **Osservato** (related list reali per oggetto).
+**Scope:** related lists on record pages. Source: **Observed** (real related lists per object).
 
-## Osservato
-- Card nella colonna destra/related con **titolo + (conteggio)**, alcune righe compatte, link **"Visualizza tutto"**, e **quick-create** (es. "Nuovo referente"/"Nuova opportunità" dall'header Account).
-- Related per oggetto: **Account** → Referenti · Opportunità · Casi (+ Attività, File). **Referente** → Opportunità · Casi · File. **Opportunità** → Ruoli dei referenti · File · Fatture. **Lead** → File.
-- **Testato:** creare un'opportunità dal contesto Account (related/azione) pre-collega l'account (più affidabile del form standalone).
-- **Da verificare:** azioni inline nelle righe related (modifica/elimina), paginazione related, colonne mostrate, "Visualizza tutto" → list view filtrata.
+## Observed
+- Card in the right/related column with **title + (count)**, a few compact rows, a **"View All"** link, and **quick-create** (e.g. "New Contact"/"New Opportunity" from the Account header).
+- Related lists per object: **Account** → Contacts · Opportunities · Cases (+ Activities, Files). **Contact** → Opportunities · Cases · Files. **Opportunity** → Contact Roles · Files · Invoices. **Lead** → Files.
+- **Tested:** creating an opportunity from the Account context (related/action) pre-links the account (more reliable than the standalone form).
+- **To verify:** inline actions on related rows (edit/delete), related-list pagination, columns shown, "View All" → filtered list view.
 
-## Proposta Laravel (Proposto per Laravel)
-- **Componente** `x-crm.related-list`: props `title`, `:rows`, `:columns`, `createRoute`, `viewAllRoute`. Mostra prime N righe + conteggio + "Visualizza tutto" (→ list view dell'oggetto correlato filtrata sul parent) + quick-create (modale con parent pre-compilato).
-- **Dati:** relazioni Eloquent (`hasMany`/`belongsToMany`) con `withCount` per i badge; eager-load per N+1; limit + "visualizza tutto".
-- **Quick-create:** riusa `x-crm.record-modal` con `foreign key` pre-settata (come "Nuova opportunità" da Account).
-- **Polimorfiche:** Attività/File/Note come related polimorfiche (`what` morph) → related list generica per qualsiasi oggetto.
-- **Rischio implementativo:** N+1 su molte related; permessi (mostra solo record visibili); conteggi costosi (cache/withCount).
+## Proposed Laravel design (Proposed for Laravel)
+- **Component** `x-crm.related-list`: props `title`, `:rows`, `:columns`, `createRoute`, `viewAllRoute`. Shows the first N rows + count + "View All" (→ the related object's list view filtered on the parent) + quick-create (modal with the parent pre-filled).
+- **Data:** Eloquent relations (`hasMany`/`belongsToMany`) with `withCount` for badges; eager-load to avoid N+1; limit + "view all".
+- **Quick-create:** reuse `x-crm.record-modal` with the foreign key preset (like "New Opportunity" from Account).
+- **Polymorphic:** Activities/Files/Notes as polymorphic related lists (`what` morph) → a generic related list for any object.
+- **Implementation risk:** N+1 on many related lists; permissions (show only visible records); expensive counts (cache/withCount).
 
-## Priorità
-- **V1:** related list principali (Account→Referenti/Opportunità; Opportunità→Ruoli referenti; +Attività/File) con conteggo, prime righe, quick-create, "visualizza tutto".
-- **V2:** azioni inline nelle righe, paginazione related, colonne configurabili.
-- **V3:** related list custom, related di related.
+## Priority
+- **V1:** main related lists (Account→Contacts/Opportunities; Opportunity→Contact Roles; +Activities/Files) with count, first rows, quick-create, "view all".
+- **V2:** inline row actions, related-list pagination, configurable columns.
+- **V3:** custom related lists, related-of-related.
 
 ## Open questions → `open-questions-and-assumptions.md`
-Azioni inline/paginazione related; colonne related; "Ruoli dei referenti" (M:N opportunità-referente).
+Inline actions/pagination on related lists; related-list columns; "Contact Roles" (M:N opportunity-contact).

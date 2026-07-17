@@ -1,13 +1,13 @@
 # Lead record page
 
-**Fonte:** Osservato/Testato (record reale + conversione). Base comune: `record-page-system.md`. Campi: `field-catalog.md` (Lead).
+**Source:** Observed/Tested (real record + conversion). Common base: `record-page-system.md`. Fields: `field-catalog.md` (Lead).
 
-- **Header:** `Lead` / nome (es. "Sig.ina Tommaso Gasperoni"). Azioni: **Converti · Cambia titolare · Modifica · ▾**.
-- **Path (Stato lead):** `Nuovo → Contattato → Nurturing → Non qualificato → Convertito` (commit due-step, `stage-transition-system.md`). `Convertito` raggiungibile solo via conversione.
-- **Sezioni (sinistra, Osservato):** `About` (Stato lead, Nome e cognome, Società, Qualifica, Sito Web, Descrizione, Titolare lead, Valutazione) · `Get in Touch` (Telefono, Email, Indirizzo) · `Segment` (N. dipendenti, Reddito annuale, Fonte del lead, Settore) · `History`.
-- **Attività:** composer + timeline (`activity-and-timeline-system.md`).
-- **Related list (destra):** `File`. (Prima della conversione il Lead ha poche relazioni.)
-- **Azione chiave — Converti** (`lead-conversion-system.md`): crea Account+Referente+Opportunità.
-- **Post-conversione (Testato):** stato → Convertito, campi read-only, `Converti` non più disponibile.
-- **Laravel:** su `commercial_pipeline_entries` + `/crm/leads/{id}` (modulo Lead esistente, `modules.md`) esteso con Path stato + azione Converti. Inline edit + timeline + quick actions.
-- **Da verificare:** trasferimento note/file/attività alla conversione; History/audit.
+- **Header:** `Lead` / name (e.g. "Ms. Jane Doe"). Actions: **Convert · Change Owner · Edit · ▾**.
+- **Path (Lead status):** `New → Contacted → Nurturing → Unqualified → Converted` (two-step commit, `stage-transition-system.md`). `Converted` reachable only via conversion.
+- **Sections (left, Observed):** `About` (Lead status, Full name, Company, Title, Website, Description, Lead owner, Rating) · `Get in Touch` (Phone, Email, Address) · `Segment` (Number of employees, Annual revenue, Lead source, Industry) · `History`.
+- **Activity:** composer + timeline (`activity-and-timeline-system.md`).
+- **Related list (right):** `Files`. (Before conversion the Lead has few relations.)
+- **Key action — Convert** (`lead-conversion-system.md`): creates Account+Contact+Opportunity.
+- **Post-conversion (Tested):** status → Converted, fields read-only, `Convert` no longer available.
+- **Laravel:** on `commercial_pipeline_entries` + `/crm/leads/{id}` (existing Lead module, `modules.md`) extended with a status Path + Convert action. Inline edit + timeline + quick actions.
+- **To verify:** transferring notes/files/activities on conversion; History/audit.

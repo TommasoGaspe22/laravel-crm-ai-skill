@@ -1,75 +1,75 @@
 # Lead conversion system
 
-**Scope:** flusso "Converti lead" → Account + Referente + Opportunità. Fonte: **Testato dinamicamente** (convertito `CRM-SKILL-Lead Nuovo 001` il 2026-07-08) + **Osservato** (modale). Include mapping campi e blueprint Laravel transazionale.
+**Scope:** the "Convert Lead" flow → Account + Contact + Opportunity. Source: **Dynamically tested** (converted `CRM-SKILL-Lead New 001` on 2026-07-08) + **Observed** (modal). Includes field mapping and the transactional Laravel blueprint.
 
-## Indice
-1. Trigger · 2. Modale (anatomia) · 3. Comportamento testato · 4. Mapping campi · 5. Laravel · 6. Test · 7. Priorità · 8. Open questions
+## Index
+1. Trigger · 2. Modal (anatomy) · 3. Tested behavior · 4. Field mapping · 5. Laravel · 6. Tests · 7. Priority · 8. Open questions
 
-## 1. Trigger (Osservato)
-Pulsante **`Converti`** nell'header azioni della record page Lead (primo pulsante, prima di `Cambia titolare`/`Modifica`). Disponibile finché il lead non è già convertito.
+## 1. Trigger (Observed)
+**`Convert`** button in the Lead record page's action header (first button, before `Change Owner`/`Edit`). Available as long as the lead isn't already converted.
 
-## 2. Modale "Converti lead" (Osservato)
-Tre sezioni, ognuna con radio **Crea / Scegli**:
-- **Account:** `Crea` (`*Nome account` pre-compilato da `Società`) — *oppure* `Scegli` (ricerca "Cerca account corrispondenti", mostra N corrispondenze → dedup).
-- **Referente:** `Crea` (nome pre-compilato da Nome+Cognome) — *oppure* `Scegli` (mostra "N corrispondenza Referente rilevata").
-- **Opportunità:** `Crea` (nome pre-compilato = `{Società}`) + checkbox **"Non creare un'opportunità alla conversione"** — *oppure* `Scegli`.
-- Bottom: `*Titolare record` (owner), `*Stato convertito` (picklist; default nella scala = ultimo stato "Convertito"/"Qualificato").
-- Footer: `Annulla · Converti`. Helper: *"Trasformeremo questo lead in tre nuovi record."*
+## 2. "Convert Lead" modal (Observed)
+Three sections, each with a **Create / Choose** radio:
+- **Account:** `Create` (`*Account name` prefilled from `Company`) — *or* `Choose` (search "Search for matching accounts", shows N matches → dedup).
+- **Contact:** `Create` (name prefilled from First+Last name) — *or* `Choose` (shows "N contact match found").
+- **Opportunity:** `Create` (name prefilled = `{Company}`) + checkbox **"Don't create an opportunity upon conversion"** — *or* `Choose`.
+- Bottom: `*Record owner` (owner), `*Converted status` (picklist; default in the ladder = the last status "Converted"/"Qualified").
+- Footer: `Cancel · Convert`. Helper: *"We'll turn this lead into three new records."*
 
-## 3. Comportamento testato dinamicamente (2026-07-08)
-Accettando i default (tutti "Crea") e cliccando **Converti**:
-- **Successo:** schermata **"Il tuo lead è stato convertito"** (illustrazione bandiera) con **3 card**: ACCOUNT · REFERENTE · OPPORTUNITÀ, ciascuna coi campi chiave (Account: Telefono/Sito/Indirizzo/Titolare; Referente: Qualifica/Telefono/Email; Opportunità: Nome/Data chiusura/Ammontare/Titolare).
-- **Record creati:** Account `CRM-SKILL-Azienda Manufacturing 001`, Referente `Mario CRM-SKILL-Lead Nuovo 001` (email `mario.rossi@crm-skill.test` **trasferita**, telefono `3000000001` **trasferito**), Opportunità `CRM-SKILL-Azienda Manufacturing 001` con **Data chiusura auto = 30/09/2026** (default ~fine trimestre/+N giorni).
-- **Dedup non forzato:** l'azienda esisteva già come Account, ma con default "Crea" è stato creato un **Account duplicato** (l'org di riferimento non forza "Scegli"; offre solo la ricerca). → **Rischio implementativo:** senza dedup esplicito si creano duplicati.
-- **Lead post-conversione:** rimane accessibile (vista dettaglio dell'org di riferimento), stato → Convertito; i campi diventano di sola lettura; azione `Converti` non più disponibile.
-- Footer post: `Nuova operazione` / `Vai a lead`. Helper "Fai clic sul nome dell'opportunità per far avanzare questa trattativa".
-- **Da verificare:** trasferimento di Note/File/Attività aperte dal Lead ai nuovi record; audit/timeline sui record creati; comportamento con "Non creare opportunità"; conversione con "Scegli" account esistente (dedup).
+## 3. Dynamically tested behavior (2026-07-08)
+Accepting the defaults (all "Create") and clicking **Convert**:
+- **Success:** **"Your lead has been converted"** screen (flag illustration) with **3 cards**: ACCOUNT · CONTACT · OPPORTUNITY, each with key fields (Account: Phone/Website/Address/Owner; Contact: Title/Phone/Email; Opportunity: Name/Close date/Amount/Owner).
+- **Records created:** Account `CRM-SKILL-Manufacturing Co 001`, Contact `Mario CRM-SKILL-Lead New 001` (email `mario.rossi@crm-skill.test` **transferred**, phone `3000000001` **transferred**), Opportunity `CRM-SKILL-Manufacturing Co 001` with **auto close date = 2026-09-30** (default ~end of quarter/+N days).
+- **Dedup not enforced:** the company already existed as an Account, but with the "Create" default a **duplicate Account** was created (the reference org doesn't force "Choose"; it only offers the search). → **Implementation risk:** without explicit dedup, duplicates get created.
+- **Lead post-conversion:** stays accessible (the reference org's detail view), status → Converted; fields become read-only; the `Convert` action is no longer available.
+- Post-conversion footer: `New Task` / `Go to Lead`. Helper "Click the opportunity name to move this deal forward".
+- **To verify:** whether open Notes/Files/Activities transfer from the Lead to the new records; audit/timeline on the created records; behavior with "Don't create opportunity"; conversion with "Choose" an existing account (dedup).
 
-## 4. Mapping campi (Osservato/Dedotto)
-| Lead | → Account | → Referente | → Opportunità |
+## 4. Field mapping (Observed/Deduced)
+| Lead | → Account | → Contact | → Opportunity |
 |---|---|---|---|
-| Società | Nome account | Nome account (rel) | Nome opportunità (`{Società}`), Account (rel) |
-| Nome/Cognome | — | Nome/Cognome | — |
-| Email | — | Email ✔(trasferita) | — |
-| Telefono | Telefono | Telefono ✔ | — |
-| Qualifica | — | Qualifica | — |
-| Sito Web/Settore/N.dip/Reddito | Account (campi corrispondenti) | — | — |
-| Titolare | Titolare | Titolare | Titolare |
-| — | — | — | Data chiusura (auto), Fase (default 1ª) |
+| Company | Account name | Account name (rel) | Opportunity name (`{Company}`), Account (rel) |
+| First/Last name | — | First/Last name | — |
+| Email | — | Email ✔(transferred) | — |
+| Phone | Phone | Phone ✔ | — |
+| Title | — | Title | — |
+| Website/Industry/#Employees/Revenue | Account (matching fields) | — | — |
+| Owner | Owner | Owner | Owner |
+| — | — | — | Close date (auto), Stage (default 1st) |
 
-## 5. Blueprint Laravel (Proposto per Laravel)
-Action `ConvertLead` (in transazione DB):
+## 5. Laravel blueprint (Proposed for Laravel)
+`ConvertLead` Action (in a DB transaction):
 ```
 DB::transaction(function() use ($lead, $opts) {
   $account = $opts->accountId ? CrmAccount::find($opts->accountId)
-            : CrmAccount::firstOrCreate(['name'=>$lead->company], [...map...]); // dedup opzionale
+            : CrmAccount::firstOrCreate(['name'=>$lead->company], [...map...]); // optional dedup
   $contact = $opts->contactId ? CrmContact::find($opts->contactId)
-            : CrmContact::create([...map da lead, 'account_id'=>$account->id]);
+            : CrmContact::create([...map from lead, 'account_id'=>$account->id]);
   $opp = null;
   if (!$opts->skipOpportunity) $opp = CrmOpportunity::create([
      'name'=>$opts->oppName ?? $lead->company, 'account_id'=>$account->id,
-     'primary_contact_id'=>$contact->id, 'stage'=>'qualifica',
+     'primary_contact_id'=>$contact->id, 'stage'=>'qualify',
      'close_date'=>$opts->closeDate ?? now()->addDays(90), 'owner_id'=>$lead->owner_id]);
-  $lead->update(['status'=>'convertito','converted_at'=>now(),
+  $lead->update(['status'=>'converted','converted_at'=>now(),
      'converted_account_id'=>$account->id,'converted_contact_id'=>$contact->id,'converted_opportunity_id'=>$opp?->id]);
-  // trasferisci attività/note/file polimorfici dal lead ai nuovi record
-  // scrivi crm_activities di tipo "conversione" su lead+account+opp (audit/timeline)
+  // transfer polymorphic activities/notes/files from the lead to the new records
+  // write a "conversion"-type crm_activities entry on lead+account+opp (audit/timeline)
 });
 ```
-- **Dedup (Proposto):** offrire match su `company`/`email` (come "Scegli") + opzione "usa esistente"; default configurabile (evita duplicati ciechi — a differenza dell'org di riferimento).
-- **Policy:** `convert` consentita a staff owner/admin; validare owner + stato convertito.
-- **Rollback:** transazione → se una create fallisce, rollback totale (nessun record orfano).
-- **Audit:** riga `crm_activities`/`audit_events` "Lead convertito" collegata a lead, account, opp.
-- **Rischio implementativo:** trasferimento relazioni polimorfiche (attività/note/file) va fatto dentro la transazione; gestire owner mancante; timezone su close_date.
+- **Dedup (Proposed):** offer a match on `company`/`email` (like "Choose") + a "use existing" option; configurable default (avoids blind duplicates — unlike the reference org).
+- **Policy:** `convert` allowed for staff owner/admin; validate owner + converted status.
+- **Rollback:** transaction → if any create fails, full rollback (no orphaned records).
+- **Audit:** a `crm_activities`/`audit_events` "Lead converted" row linked to the lead, account, and opp.
+- **Implementation risk:** transferring polymorphic relations (activities/notes/files) must happen inside the transaction; handle a missing owner; timezone on close_date.
 
-## 6. Test consigliati (Laravel)
-Feature: conversione con nuovo account · con account esistente (dedup) · senza opportunità · dati minimi · rollback su errore (mock failure) · trasferimento attività/note · policy (utente non autorizzato → 403) · stato lead post = convertito · idempotenza (non ri-convertire).
+## 6. Recommended tests (Laravel)
+Feature: conversion with a new account · with an existing account (dedup) · without an opportunity · minimal data · rollback on error (mock failure) · activity/note transfer · policy (unauthorized user → 403) · post-conversion lead status = converted · idempotency (don't re-convert).
 
-## 7. Priorità
-- **V1:** conversione crea Account+Referente+Opportunità in transazione, con opzione dedup base e "no opportunità", audit. 
-- **V2:** UI dedup ricca (match multipli), trasferimento note/file/attività completo, mapping campi configurabile.
-- **V3:** regole di conversione automatiche, merge avanzato.
-- **Non replicare:** conversione massiva batch complessa (come nell'org di riferimento), a meno di reale necessità.
+## 7. Priority
+- **V1:** conversion creates Account+Contact+Opportunity in a transaction, with a basic dedup option and "no opportunity", audit.
+- **V2:** rich dedup UI (multiple matches), full note/file/activity transfer, configurable field mapping.
+- **V3:** automatic conversion rules, advanced merge.
+- **Do not replicate:** complex batch mass-conversion (as in the reference org), unless genuinely needed.
 
 ## 8. Open questions → `open-questions-and-assumptions.md`
-Trasferimento Note/File/Attività (Da verificare); dedup con "Scegli" (Da verificare); valori `Stato convertito`; comportamento "Non creare opportunità".
+Note/File/Activity transfer (to verify); dedup with "Choose" (to verify); `Converted status` values; "Don't create opportunity" behavior.

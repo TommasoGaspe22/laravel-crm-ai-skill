@@ -1,41 +1,41 @@
 # List view system
 
-**Scope:** viste elenco (list view) di tutti gli oggetti. Fonte: **Osservato/Testato** (liste popolate Lead/Opportunità, controlli, viste). Anatomia: `screen-anatomy.md` §A. Sotto-sistemi: `saved-views-system.md`, `table-system.md`, `column-management-system.md`, `bulk-actions-system.md`, `pagination-and-loading-system.md`, `split-view-system.md`, `filter-builder-system.md`.
+**Scope:** list views for all objects. Source: **Observed/Tested** (populated Lead/Opportunity lists, controls, views). Anatomy: `screen-anatomy.md` §A. Sub-systems: `saved-views-system.md`, `table-system.md`, `column-management-system.md`, `bulk-actions-system.md`, `pagination-and-loading-system.md`, `split-view-system.md`, `filter-builder-system.md`.
 
-## Indice
-1. Struttura · 2. Controlli · 3. Modalità display · 4. Findings · 5. Laravel · 6. Priorità · 7. Open questions
+## Index
+1. Structure · 2. Controls · 3. Display modes · 4. Findings · 5. Laravel · 6. Priority · 7. Open questions
 
-## 1. Struttura (Osservato)
-- Header: label oggetto + **nome vista con ▾ + pin** (default) + **azioni oggetto** (`Nuovo · Importa · …`).
-- **Meta line:** "N elementi • Ordinati per {col} • Filtrati per {…} • Aggiornato {t} fa". (Testato: count si aggiorna con i dati; es. Opportunità "2 elementi".)
-- **Toolbar:** ricerca in elenco · gear controlli · display selector · Aggiorna · Ordinamento colonne · Modifica elenco (inline) · Grafici · Filtri.
-- **Tabella** densa: select-all + checkbox riga + celle (✎ editabili) + **azione riga ▾**.
+## 1. Structure (Observed)
+- Header: object label + **view name with ▾ + pin** (default) + **object actions** (`New · Import · …`).
+- **Meta line:** "N items • Sorted by {col} • Filtered by {…} • Updated {t} ago". (Tested: count updates with data; e.g. Opportunity "2 items".)
+- **Toolbar:** list search · controls gear · display selector · Refresh · Column sort · Edit list (inline) · Charts · Filters.
+- **Dense table:** select-all + row checkbox + cells (✎ editable) + **row action ▾**.
 
-## 2. Controlli (Osservato)
-- **Gear "Controlli visualizzazione elenco":** `Nuovo · Clona · Rinomina · Impostazioni di condivisione · Seleziona i campi da visualizzare · Elimina · Reimposta larghezze colonna`. (Testato: menu reale.) → `saved-views-system.md`, `column-management-system.md`.
-- **Selettore viste** (▾ sul nome): elenco viste (recenti/personali/standard). Testato per Opportunità: `In chiusura nel mese corrente/prossimo · Novità della settimana corrente · Opportunità in corso di realizzazione · Opportunità personali · Opportunità visualizzate recentemente · Recenti · Tutte le opportunità`.
-- **Ordinamento:** click header colonna (asc/desc, uno alla volta). `Ordinamento colonne` per multi. → `table-system.md`.
-- **Ricerca in elenco:** `q` server-side sui campi della vista.
+## 2. Controls (Observed)
+- **"List view controls" gear:** `New · Clone · Rename · Sharing Settings · Select Fields to Display · Delete · Reset Column Widths`. (Tested: real menu.) → `saved-views-system.md`, `column-management-system.md`.
+- **View selector** (▾ on the name): list of views (recent/personal/standard). Tested for Opportunity: `Closing This/Next Month · New This Week · Opportunities In Progress · My Opportunities · Recently Viewed Opportunities · Recent · All Opportunities`.
+- **Sorting:** click a column header (asc/desc, one at a time). `Column sort` for multi. → `table-system.md`.
+- **List search:** server-side `q` across the view's fields.
 
-## 3. Modalità display (Osservato/Testato)
-Pulsante **"Seleziona visualizzazione elenco"** (icona griglia ▾) → **Tabella · Kanban · Doppia visualizzazione (Split)**. Vedi `table-system.md`, `kanban-system.md`, `split-view-system.md`.
+## 3. Display modes (Observed/Tested)
+**"Select list view display"** button (grid icon ▾) → **Table · Kanban · Split View**. See `table-system.md`, `kanban-system.md`, `split-view-system.md`.
 
-## 4. Findings chiave (Testato)
-- **La vista di sistema "Recenti" (Recently Viewed) NON supporta Filtri, Grafici, Kanban** ("non disponibili per questa visualizzazione elenco"). Solo le viste reali (standard/personali) li abilitano.
-- Le azioni oggetto e le colonne cambiano per oggetto (vedi `source-crm-reference.md` + capture).
-- Row action ▾ e select-all presenti su liste popolate.
+## 4. Key findings (Tested)
+- **The "Recent" (Recently Viewed) system view does NOT support Filters, Charts, Kanban** ("not available for this list view"). Only real views (standard/personal) enable them.
+- Object actions and columns change per object (see `source-crm-reference.md` + capture).
+- Row action ▾ and select-all present on populated lists.
 
-## 5. Proposta Laravel (Proposto per Laravel)
-- Controller `index` per oggetto: query server-side con **vista** (`?view=`), **ricerca** (`q`), **ordinamento** (`sort`/`dir` whitelisted), **filtri** (`filter-builder-system.md`), **paginazione** (`pagination-and-loading-system.md`). Eager-load per N+1.
-- Componenti: `x-crm.page-header`, `x-crm.view-selector`, `x-crm.list-toolbar`, `x-crm.data-table`, `x-crm.filter-panel`, `x-crm.kanban` (vedi `component-catalog.md`).
-- **Viste**: `App\Support\{Obj}ListViews` + tabella `saved_views` (V2). Distinzione "viste di sistema" (recenti/miei) senza filtri/kanban avanzati.
-- Preferenze (colonne/densità/vista) persistite (session/localStorage V1; tabella V2).
+## 5. Proposed Laravel design (Proposed for Laravel)
+- `index` controller per object: server-side query with **view** (`?view=`), **search** (`q`), **sort** (`sort`/`dir` whitelisted), **filters** (`filter-builder-system.md`), **pagination** (`pagination-and-loading-system.md`). Eager-load for N+1.
+- Components: `x-crm.page-header`, `x-crm.view-selector`, `x-crm.list-toolbar`, `x-crm.data-table`, `x-crm.filter-panel`, `x-crm.kanban` (see `component-catalog.md`).
+- **Views**: `App\Support\{Obj}ListViews` + `saved_views` table (V2). Distinguish "system views" (recent/mine) without advanced filters/kanban.
+- Preferences (columns/density/view) persisted (session/localStorage V1; table V2).
 
-## 6. Priorità
-- **V1:** tabella densa (sort, ricerca, filtri base, viste predefinite, azioni riga, select+bulk essenziali, paginazione, stati vuoto/loading/errore). Vista "per fase" raggruppata (Opportunità).
-- **V2:** Kanban drag&drop, split view, colonne configurabili+resize, saved views utente, filter builder avanzato, grafici.
-- **V3:** viste condivise/permessi, grafici avanzati, import wizard ricco.
-- **Non replicare (V1):** grafici embedded, doppia visualizzazione, condivisione viste granulare.
+## 6. Priority
+- **V1:** dense table (sort, search, basic filters, preset views, row actions, essential select+bulk, pagination, empty/loading/error states). "By stage" grouped view (Opportunity).
+- **V2:** Kanban drag&drop, split view, configurable+resizable columns, user saved views, advanced filter builder, charts.
+- **V3:** shared views/permissions, advanced charts, rich import wizard.
+- **Do not replicate (V1):** embedded charts, split view, granular view sharing.
 
 ## 7. Open questions → `open-questions-and-assumptions.md`
-Paginazione con molti record (Q13); persistenza preferenze; import wizard; grafici; azioni oggetto per oggetto.
+Pagination with many records (Q13); preference persistence; import wizard; charts; per-object actions.

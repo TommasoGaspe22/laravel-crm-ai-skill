@@ -1,13 +1,13 @@
-# Opportunità record page
+# Opportunity record page
 
-**Fonte:** Osservato/Testato (record reale + stage transition + inline edit + attività). Base: `record-page-system.md`. Campi: `field-catalog.md` (Opportunità).
+**Source:** Observed/Tested (real record + stage transition + inline edit + activities). Base: `record-page-system.md`. Fields: `field-catalog.md` (Opportunity).
 
-- **Header:** `Opportunità` / nome (es. "CRM-SKILL-Azienda Manufacturing 001-"). Azioni: **Nuovo evento · Nuova operazione · Registra una chiamata · Modifica · Crea nuova fattura · ▾**.
-- **Path (Fase):** `Qualify → Meet & Present → Propose → Negotiate → Chiuso` (Chiuso = Won/Lost). Pannello **"Guida per il successo"** per fase (Testato: guida "Make the offer…" su Propose). Commit due-step. Vedi `stage-transition-system.md`. **Testato:** Qualify→Propose.
-- **Sezioni (Osservato):** `About` (Nome opportunità, Nome account [lookup], Data chiusura, Ammontare, Descrizione, Titolare opportunità) · `Status` (Fase, Probabilità %, Categoria di previsione, Fase successiva).
-- **Inline edit (Testato/Osservato):** ✎ per campo (es. Ammontare) → input + barra Annulla/Salva.
-- **Attività (Testato):** "Registra una chiamata" → item in timeline; "Nuova operazione" (Task: Oggetto+Scadenza).
-- **Related list (Osservato):** **Ruoli dei referenti · File · Fatture**.
-- **Kanban:** l'opportunità è una card nel Kanban per fase (`kanban-system.md`).
-- **Laravel:** `CrmOpportunity` `belongsTo account`, `primary_contact`, `hasMany items` (V3), morph activities. Fase = enum config; `is_closed/is_won` derivati; probabilità mappata da fase. Vedi `data-model-full.md`.
-- **Da verificare:** chiusura Won/Lost (modale stato+motivo persa); valori Categoria previsione; auto-probabilità per fase; line items/prodotti.
+- **Header:** `Opportunity` / name (e.g. "CRM-SKILL-Manufacturing Co 001-"). Actions: **New Event · New Task · Log a Call · Edit · Create New Invoice · ▾**.
+- **Path (Stage):** `Qualify → Meet & Present → Propose → Negotiate → Closed` (Closed = Won/Lost). **"Guidance for Success"** panel per stage (Tested: guidance "Make the offer…" on Propose). Two-step commit. See `stage-transition-system.md`. **Tested:** Qualify→Propose.
+- **Sections (Observed):** `About` (Opportunity name, Account name [lookup], Close date, Amount, Description, Opportunity owner) · `Status` (Stage, Probability %, Forecast category, Next step).
+- **Inline edit (Tested/Observed):** ✎ per field (e.g. Amount) → input + Cancel/Save bar.
+- **Activity (Tested):** "Log a Call" → item in the timeline; "New Task" (Task: Subject+Due date).
+- **Related list (Observed):** **Contact Roles · Files · Invoices**.
+- **Kanban:** the opportunity is a card in the by-stage Kanban (`kanban-system.md`).
+- **Laravel:** `CrmOpportunity` `belongsTo account`, `primary_contact`, `hasMany items` (V3), morph activities. Stage = config enum; `is_closed/is_won` derived; probability mapped from stage. See `data-model-full.md`.
+- **To verify:** Won/Lost closing (status+loss-reason modal); Forecast category values; auto-probability per stage; line items/products.

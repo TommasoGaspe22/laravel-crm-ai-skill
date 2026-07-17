@@ -1,11 +1,11 @@
 # Account record page
 
-**Fonte:** Osservato/Testato (record reale + eliminazione). Base: `record-page-system.md`. Campi: `field-catalog.md` (Account) + `data-model-and-migrations.md`.
+**Source:** Observed/Tested (real record + deletion). Base: `record-page-system.md`. Fields: `field-catalog.md` (Account) + `data-model-and-migrations.md`.
 
-- **Header:** `Account` / nome. Azioni: icona **org-chart** · **Nuovo referente · Nuova opportunità · Modifica · ▾**. Nessun Path (Account non ha fasi).
-- **Sezioni (Osservato):** `About` (Nome account, Sito Web, Tipo, Descrizione, Società controllante [lookup self], Titolare account) · `Get in Touch` (Telefono, Indirizzo fatturazione, Indirizzo spedizioni) · `History`.
-- **Attività:** composer + timeline.
-- **Related list (Osservato):** **Referenti · Opportunità · Casi** (+ Attività, File). Da qui i quick-create "Nuovo referente"/"Nuova opportunità" (Testato: creazione opp dal contesto account funziona meglio del form standalone).
-- **Eliminazione (Testato):** azione `Elimina` → dialog "Eliminare questo account?" (titolo "Elimina account") → conferma → redirect a list. Cascata su Referenti/Opportunità **Da verificare**.
-- **Laravel:** `CrmAccount` (hub) → `hasMany contacts/opportunities/activities`; `belongsTo parent`. Related list con conteggi + quick-create. Vedi `data-model-full.md`.
-- **Da verificare:** campi completi New Account (Tipo picklist valori); cascata eliminazione; gerarchia società controllante (org chart).
+- **Header:** `Account` / name. Actions: **org-chart** icon · **New Contact · New Opportunity · Edit · ▾**. No Path (Account has no stages).
+- **Sections (Observed):** `About` (Account name, Website, Type, Description, Parent account [self lookup], Account owner) · `Get in Touch` (Phone, Billing address, Shipping address) · `History`.
+- **Activity:** composer + timeline.
+- **Related list (Observed):** **Contacts · Opportunities · Cases** (+ Activities, Files). Quick-create "New Contact"/"New Opportunity" live here (Tested: creating an opp from the account context works more reliably than the standalone form).
+- **Deletion (Tested):** `Delete` action → "Delete this account?" dialog (title "Delete Account") → confirm → redirect to the list. Cascade to Contacts/Opportunities **to verify**.
+- **Laravel:** `CrmAccount` (hub) → `hasMany contacts/opportunities/activities`; `belongsTo parent`. Related list with counts + quick-create. See `data-model-full.md`.
+- **To verify:** full New Account fields (Type picklist values); deletion cascade; parent-account hierarchy (org chart).
