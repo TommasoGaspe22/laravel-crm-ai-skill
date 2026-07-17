@@ -1,5 +1,5 @@
 ---
-name: laravel-crm-blueprint
+name: laravel-crm-ai-skill
 description: Use when building, extending, or reviewing a Laravel CRM that needs an enterprise-style sales flow (Lead, Account, Contact, Opportunity with stages, Products/Price Books, Activities/Calendar) rebranded for your own app. Triggers on requests about /crm, list views, saved views, record detail pages, opportunity stages/pipeline, lead conversion, activities timeline, next-action queue, bulk/row actions, status/priority badges, or making a CRM feel like a polished enterprise product.
 ---
 

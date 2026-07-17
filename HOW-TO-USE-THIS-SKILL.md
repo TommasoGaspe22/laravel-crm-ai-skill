@@ -1,4 +1,4 @@
-# How to use the `laravel-crm-blueprint` skill
+# How to use the `laravel-crm-ai-skill` skill
 
 Practical guide for using this skill. It's a **complete reverse-engineering of a reference enterprise CRM**, turned into an **implementable specification for a Laravel CRM** (built for a generic Laravel project, reusable in any app). No asset, branding, or proprietary data from the reference org: only patterns, UX, and logic were captured.
 
@@ -75,4 +75,4 @@ See `definition-of-done.md` §remaining + `open-questions-and-assumptions.md`. R
 
 ## 8. Suggested next step
 
-Ask your AI assistant, inside your Laravel project: *"implement Phase A of the CRM following the laravel-crm-blueprint skill"* → it will start with extracting the service + an additive migration + `/crm/leads`, in TDD, without touching existing functionality.
+Ask your AI assistant, inside your Laravel project: *"implement Phase A of the CRM following the laravel-crm-ai-skill skill"* → it will start with extracting the service + an additive migration + `/crm/leads`, in TDD, without touching existing functionality.

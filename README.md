@@ -1,6 +1,6 @@
-# laravel-crm-blueprint
+# laravel-crm-ai-skill
 
-A complete, reverse-engineered build framework for adding an **enterprise-style CRM sales flow** (Lead → Account → Contact → Opportunity, with stages, saved views, conversion, activities) to **any Laravel app**.
+An **AI agent skill** (for Claude Code, or any other AI coding assistant) that is a complete, reverse-engineered build framework for adding an **enterprise-style CRM sales flow** (Lead → Account → Contact → Opportunity, with stages, saved views, conversion, activities) to **any Laravel app**.
 
 It's not a package or a starter kit you `composer require`. It's a **detailed specification** — data model, UX anatomy, component catalog, TDD test plan, phased roadmap — meant to be fed to an AI coding assistant so it can implement the CRM in your own codebase without reinventing the key product/architecture decisions.
 
@@ -17,10 +17,10 @@ Validated end-to-end: following this framework in a fresh Laravel 13 app (servic
 Drop this folder into your project's `.claude/skills/` directory (or your global `~/.claude/skills/`):
 
 ```bash
-git clone https://github.com/TommasoGaspe22/laravel-crm-blueprint.git .claude/skills/laravel-crm-blueprint
+git clone https://github.com/TommasoGaspe22/laravel-crm-ai-skill.git .claude/skills/laravel-crm-ai-skill
 ```
 
-Claude Code auto-discovers it via the `name`/`description` frontmatter in `SKILL.md` and invokes it automatically when you ask for CRM-related work (list views, opportunity pipeline, lead conversion, etc.), or explicitly with `/laravel-crm-blueprint`.
+Claude Code auto-discovers it via the `name`/`description` frontmatter in `SKILL.md` and invokes it automatically when you ask for CRM-related work (list views, opportunity pipeline, lead conversion, etc.), or explicitly with `/laravel-crm-ai-skill`.
 
 ## Using it with any other AI assistant
 
